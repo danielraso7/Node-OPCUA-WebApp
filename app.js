@@ -64,7 +64,7 @@ async function createOPCUAClient(io) {
   monitoredItem.on("changed", (dataValue) => {
       console.log("hallo");
       //console.log(dataValue)
-      //console.log(dataValue);
+      console.log(dataValue);
       /*io.sockets.emit("message", {
       value: dataValue.value.value,
       timestamp: dataValue.serverTimestamp,

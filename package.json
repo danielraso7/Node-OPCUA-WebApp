@@ -1,5 +1,5 @@
 {
-  "name": "node-opcua-htmlpanel",
+  "name": "node-opcua-webapp",
   "version": "2.1.0",
   "description": "Small HTML panel to display a OPCUA monitored variable based on node, express, socket.io  and node-opcua",
   "main": "app.js",
@@ -10,7 +10,7 @@
   "scripts": {},
   "repository": {},
   "keywords": [],
-  "author": "Etienne Rossignon",
+  "author": "Daniel Rašo, Daniel Jaburek, Rebecca Rachinger",
   "license": "MIT",
   "dependencies": {
     "chalk": "4.1.2",
