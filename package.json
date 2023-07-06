@@ -5,7 +5,8 @@
   "main": "app.js",
   "bin": {},
   "directories": {
-    "test": "test"
+    "test": "test",
+    "opcua": "OPCUA tools"
   },
   "scripts": {},
   "repository": {},
