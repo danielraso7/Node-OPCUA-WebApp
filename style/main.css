@@ -1,0 +1,4 @@
+div:has(#gauge) {
+    width: 500px;
+    height: 500px;
+}

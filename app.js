@@ -2,7 +2,7 @@ const express = require("express");
 const chalk = require("chalk");
 const http = require("http");
 const { Server } = require("socket.io");
-const opcua = require("./opcua");
+const opcua = require("./javascript/opcua");
 const config = require("./config/config.json");
 
 (async () => {

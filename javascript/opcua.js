@@ -7,8 +7,6 @@ const endpointUrl = config.endpointUrl;
 
 let client, session, subscription;
 
-let stromBesaeumer1Value, stromBesaeumer2Value, istStückzahlValue, geschMitnehmerfoerdererValue, anlageStoerungValue, anlageRuestenValue, anlageAutomatikValue, anlageHandValue;
-
 module.exports = {
 
  createOPCUAClient: async function (io) {
@@ -49,22 +47,36 @@ module.exports = {
       queueSize: 100,
     };
 
+    const nodeIdKeys = Object.keys(config.nodeIds);
     const itemsToMonitor = [];
-
-    for (const nodeId in config.nodeIds) {
+    for (const nodeId of nodeIdKeys) {
       itemsToMonitor.push({
-        nodeId: config.nodeIds[nodeId],
+        nodeId: config.nodeIds[nodeId].id,
         attributeId: AttributeIds.Value,
       });
     }
 
     const monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
 
+
     monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
-        console.log("CHANGE");
-        console.log(monitoredItem.itemToMonitor.nodeId.value);
-        console.log(dataValue.value.value);
-        console.log(Date(Date.parse(dataValue.sourceTimestamp)));
+      // use "csv" property to determine if we need to write to a csv file
+      // either way: use io.socket.emit
+      // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
+      if (config.nodeIds[nodeIdKeys[index]].csv) {
+        // TODO
+        console.log("create or update csv file");
+      }
+
+      io.sockets.emit(nodeIdKeys[index], {
+        value: dataValue.value.value,
+        timestamp: Date(Date.parse(dataValue.sourceTimestamp)),
+        // browseName: "Temperature",
+      });
+
+      console.log(monitoredItem.itemToMonitor.nodeId.value);
+      console.log(dataValue.value.value);
+      console.log(Date(Date.parse(dataValue.sourceTimestamp)));
     });
 
   },
@@ -76,12 +88,3 @@ module.exports = {
   }
 
 }
-
-exports.stromBesaeumer1 = stromBesaeumer1Value;
-exports.stromBesaeumer2 = stromBesaeumer2Value;
-exports.istStückzahl = istStückzahlValue;
-exports.geschMitnehmerfoerderer = geschMitnehmerfoerdererValue;
-exports.anlageStoerung = anlageStoerungValue;
-exports.anlageRuesten = anlageRuestenValue;
-exports.anlageAutomatik = anlageAutomatikValue;
-exports.anlageHand = anlageHandValue;
