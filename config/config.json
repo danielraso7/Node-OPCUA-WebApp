@@ -1,12 +1,14 @@
 {
     "port": "3700",
     "endpointUrl": "opc.tcp://192.168.10.14:4840",
-    "stromBesaeumer1": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer1\"",
-    "stromBesaeumer2": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer2\"",
-    "istStückzahl": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"Iststückzahl\"",
-    "geschMitnehmerfoerderer": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"GeschwMitnehmerfoerderer\"",
-    "anlageStoerung": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageStoerung\"",
-    "anlageRuesten": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageRüsten\"",
-    "anlageAutomatik": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"",
-    "anlageHand": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\""
+    "nodeIds": {
+        "stromBesaeumer1": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer1\"",
+        "stromBesaeumer2": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer2\"",
+        "istStückzahl": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"Iststückzahl\"",
+        "geschMitnehmerfoerderer": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"GeschwMitnehmerfoerderer\"",
+        "anlageStoerung": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageStoerung\"",
+        "anlageRuesten": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageRüsten\"",
+        "anlageAutomatik": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"",
+        "anlageHand": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\""
+    }
 }

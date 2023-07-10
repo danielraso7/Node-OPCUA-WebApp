@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const http = require("http");
 const { Server } = require("socket.io");
 const opcua = require("./opcua");
-const port = 3700;
+const config = require("./config/config.json");
 
 (async () => {
   try {
@@ -15,17 +15,15 @@ const port = 3700;
     app.get("/", function (req, res) {
       res.render("index.html");
     });
-    app.use(express.static(__dirname + "/"));
 
     const server = http.createServer(app);
+    server.listen(config.port, () => {
+        console.log("Listening on port " + config.port);
+        console.log("visit http://localhost:" + config.port);
+    });
 
     const io = new Server(server);
-    io.sockets.on("connection", function (socket) {});
-
-    server.listen(port, () => {
-      console.log("Listening on port " + port);
-      console.log("visit http://localhost:" + port);
-    });
+    io.sockets.on("connection", function (socket) {console.log("Client connected to server!")});
 
     // --------------------------------------------------------
     opcua.createOPCUAClient(io);
