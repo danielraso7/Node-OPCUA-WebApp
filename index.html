@@ -8,7 +8,43 @@
         <link rel="stylesheet" type="text/css" media="screen" href="./style/main.css" />
     </head>
     <body>
-        <div><canvas id="gauge"></canvas></div>
+        <div style="display: flex; height: 400px; width: 100%;">
+            <div style="width: 500px;">
+                <canvas id="gauge"></canvas>
+            </div>
+            <div class="square">
+                <span>Stück:</span><br>
+                <span id="istStueckzahl"></span>
+            </div>
+            <div class="square">
+                <span id="auto" class="off">
+                    Auto
+                </span>
+            </div>
+            <div class="square">
+                <span id="hand" class="off">
+                    Hand
+                </span>
+            </div>
+            <div class="square">
+                <span id="fault" class="off">
+                    Störung
+                </span>
+            </div>
+            <div class="square">
+                <span id="equip" class="off">
+                    Rüsten
+                </span>
+            </div>
+         
+        </div>
+
+        <div class="chartBox">
+            <canvas id="stromBesaeumer1" width="1000" height="400"></canvas>
+        </div>
+        <div>
+            <canvas id="doughnut"></canvas>
+        </div>
     </body>
     <script
         src="https://cdn.socket.io/4.6.0/socket.io.min.js"
@@ -16,6 +52,11 @@
         crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1/dist/chartjs-adapter-luxon.umd.min.js"></script>
     <script src="./javascript/main.js"></script>
     <script src="./javascript/gauge.js"></script>
+    <script src="./javascript/doughnut.js"></script>
+    <script src="./javascript/lineChart.js"></script>
+
 </html>

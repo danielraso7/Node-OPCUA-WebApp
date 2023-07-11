@@ -1,10 +1,10 @@
-const ctx = document.getElementById('gauge');
+const ctxGauge = document.getElementById('gauge');
 
 // gaugeNeedle block
 const gaugeNeedle = {
     id: 'gaugeNeedle',
     afterDatasetDraw(chart, args, options){
-        const { ctx, configg, data, chartArea: { top, bottom, left, right, width, height } } = chart;
+        const { ctx, configGauge, data, chartArea: { top, bottom, left, right, width, height } } = chart;
 
         ctx.save();
         const needleValue = data.datasets[0].needleValue;
@@ -60,7 +60,7 @@ const gaugeNeedle = {
     }
 }
 
-const data = {    
+const dataGauge = {    
     labels: [],
     datasets: [{
         label: '# of Votes',
@@ -78,21 +78,21 @@ const data = {
     }]  
 }
 
-const configg = {
+const configGauge = {
     type: 'doughnut',
-    data: data,
+    data: dataGauge,
     options: {
         responsive: true,
         plugins: {
-        tooltip: {
-            enabled: false 
-        }
+            tooltip: {
+                enabled: false 
+            }
         }   
     },
     plugins: [gaugeNeedle]
 }
 
 const gauge = new Chart(
-    ctx, 
-    configg
+    ctxGauge, 
+    configGauge
 );

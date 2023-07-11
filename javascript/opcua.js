@@ -58,7 +58,7 @@ module.exports = {
 
     const monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
 
-
+    
     monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
       // use "csv" property to determine if we need to write to a csv file
       // either way: use io.socket.emit

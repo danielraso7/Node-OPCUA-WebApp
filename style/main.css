@@ -1,4 +1,55 @@
+body{
+    font-size:14;  
+    font-family:arial
+}
+
 div:has(#gauge) {
     width: 500px;
+    height: 400px;
+}
+
+div:has(#doughnut) {
+    width: 500px;
     height: 500px;
+}
+
+.chartBox{
+    width: 1000px;
+    height: 400px;
+}
+
+.square{
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid black; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.on{
+    width: 100%; 
+    height: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    background-color: limegreen;
+}
+
+.off{
+    width: 100%; 
+    height: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    background-color: rgb(187, 187, 187);
+}
+
+.fault{
+    background-color: red;
+}
+
+.equip{
+    background-color: darkturquoise;
 }
