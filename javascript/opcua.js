@@ -62,44 +62,21 @@ module.exports = {
 
     const monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
 
-    let dataValueCache = [], lastTimeSaved = [];
-    for(i = 0; i < nodeIdKeys.length; i++) {
-      dataValueCache[i] = [];
-      lastTimeSaved[i] = Date.now();
-    }
-    // interval how often the values are written to the file (in ms)
-    const timeIntervalSaveDataValues = 1000;
-    let entry;
-
     monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
       dataValueMemory[index] = dataValue;
       // use "csv" property to determine if we need to write to a csv file
       // either way: use io.socket.emit
       // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
       if (config.nodeIds[nodeIdKeys[index]].csv) {
-        if (Date.now() > lastTimeSaved[index] + timeIntervalSaveDataValues) {
-          console.log("create or update csv file");
-          let dataValueCacheEntry = dataValueCache[index];
-          entry = "";
-          for (i = 0; i < dataValueCacheEntry.length; i++) {
             entry =
-              entry +
-              dataValueCacheEntry[i].value.value +
+              "" +
+              dataValue.value.value +
               ";" +
-              Date.parse(dataValueCacheEntry[i].sourceTimestamp) +
+              Date.parse(dataValue.sourceTimestamp) +
               ";" +
-              new Date(Date.parse(dataValueCacheEntry[i].sourceTimestamp)) +
+              new Date(Date.parse(dataValue.sourceTimestamp)) +
               "\n";
-          }
           csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
-
-          dataValueCache[index] = [];
-          lastTimeSaved[index] = Date.now();
-        }
-        else {
-          console.log("fill cache - " + nodeIdKeys[index]);
-          dataValueCache[index].push(dataValue);
-        }
       }
 
       io.sockets.emit(nodeIdKeys[index], {
