@@ -81,13 +81,8 @@ module.exports = {
 
       io.sockets.emit(nodeIdKeys[index], {
         value: dataValue.value.value,
-        timestamp: new Date(Date.parse(dataValue.sourceTimestamp)),
-        // browseName: "Temperature",
+        timestamp: Date.parse(dataValue.sourceTimestamp),
       });
-
-      // console.log(monitoredItem.itemToMonitor.nodeId.value);
-      // console.log(dataValue.value.value);
-      // console.log(new Date(Date.parse(dataValue.sourceTimestamp)));
     });
 
   },
@@ -128,7 +123,7 @@ module.exports = {
 
         io.sockets.emit(v, {
           value: emittedValue,
-          timestamp: new Date(Date.parse(dataValueMemory[i].sourceTimestamp))
+          timestamp: Date.parse(dataValueMemory[i].sourceTimestamp)
         });
 
         // console.log(v);
