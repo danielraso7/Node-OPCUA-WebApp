@@ -9,12 +9,12 @@ const endpointUrl = config.endpointUrl;
 
 let client, session, subscription;
 
-let subscriptionParameters, itemsToMonitor, monitoredItems, dataValueMemory = [];
+let dataValueMemory = [];
 const nodeIdKeys = Object.keys(config.nodeIds);
 
 module.exports = {
 
- createOPCUAClient: async function (io) {
+  createOPCUAClient: async function (io) {
     client = OPCUAClient.create({
       endpointMustExist: false,
     });
@@ -24,10 +24,10 @@ module.exports = {
     console.log(" connecting to ", chalk.cyan(endpointUrl));
     await client.connect(endpointUrl);
     console.log(" connected to ", chalk.cyan(endpointUrl));
-  
+
     session = await client.createSession();
     console.log(chalk.yellow(" session created"));
-  
+
     subscription = await session.createSubscription2({
       requestedPublishingInterval: 250,
       requestedMaxKeepAliveCount: 50,
@@ -36,7 +36,7 @@ module.exports = {
       publishingEnabled: true,
       priority: 10,
     });
-  
+
     subscription
       .on("keepalive", function () {
         console.log(" SUBSCRIPTION KEEPALIVE ------------------------------->");
@@ -44,15 +44,15 @@ module.exports = {
       .on("terminated", function () {
         console.log(" SUBSCRIPTION TERMINATED ------------------------------>");
       });
-  
 
-    subscriptionParameters = {
+
+    const subscriptionParameters = {
       samplingInterval: 100,
       discardOldest: true,
       queueSize: 100,
     };
 
-    itemsToMonitor = [];
+    const itemsToMonitor = [];
     for (const nodeId of nodeIdKeys) {
       itemsToMonitor.push({
         nodeId: config.nodeIds[nodeId].id,
@@ -60,25 +60,46 @@ module.exports = {
       });
     }
 
-    monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
+    const monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
 
-    
+    let dataValueCache = [], lastTimeSaved = [];
+    for(i = 0; i < nodeIdKeys.length; i++) {
+      dataValueCache[i] = [];
+      lastTimeSaved[i] = Date.now();
+    }
+    // interval how often the values are written to the file (in ms)
+    const timeIntervalSaveDataValues = 1000;
+    let entry;
+
     monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
       dataValueMemory[index] = dataValue;
       // use "csv" property to determine if we need to write to a csv file
       // either way: use io.socket.emit
       // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
       if (config.nodeIds[nodeIdKeys[index]].csv) {
-        console.log("create or update csv file");
-        let entry =
-            "" +
-            dataValue.value.value +
-            ";" +
-            Date.parse(dataValue.sourceTimestamp) +
-            ";" +
-            new Date(Date.parse(dataValue.sourceTimestamp)) +
-            "\n";
-        csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
+        if (Date.now() > lastTimeSaved[index] + timeIntervalSaveDataValues) {
+          console.log("create or update csv file");
+          let dataValueCacheEntry = dataValueCache[index];
+          entry = "";
+          for (i = 0; i < dataValueCacheEntry.length; i++) {
+            entry =
+              entry +
+              dataValueCacheEntry[i].value.value +
+              ";" +
+              Date.parse(dataValueCacheEntry[i].sourceTimestamp) +
+              ";" +
+              new Date(Date.parse(dataValueCacheEntry[i].sourceTimestamp)) +
+              "\n";
+          }
+          csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
+
+          dataValueCache[index] = [];
+          lastTimeSaved[index] = Date.now();
+        }
+        else {
+          console.log("fill cache - " + nodeIdKeys[index]);
+          dataValueCache[index].push(dataValue);
+        }
       }
 
       io.sockets.emit(nodeIdKeys[index], {
@@ -93,7 +114,7 @@ module.exports = {
     });
 
   },
-  
+
   stopOPCUAClient: async function () {
     if (subscription) await subscription.terminate();
     if (session) await session.close();
@@ -101,7 +122,7 @@ module.exports = {
   },
 
   emitValues: async function (io) {
-    if(client != null && nodeIdKeys != null && dataValueMemory.length != 0) {
+    if (client != null && nodeIdKeys != null && dataValueMemory.length != 0) {
       nodeIdKeys.forEach((v, i) => {
         // boolean or int values
         let emittedValue = dataValueMemory[i].value.value;
@@ -127,7 +148,7 @@ module.exports = {
             console.log(emittedValue);
           }
         }
-          
+
         io.sockets.emit(v, {
           value: emittedValue,
           timestamp: new Date(Date.parse(dataValueMemory[i].sourceTimestamp))
@@ -142,13 +163,13 @@ module.exports = {
 }
 
 function getCurrentDateAsFolderName() {
-    let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+  let d = new Date(),
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
 
-    return [day, month, year].join('_');
+  return [day, month, year].join('_');
 }
