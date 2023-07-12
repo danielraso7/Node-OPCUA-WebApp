@@ -11,24 +11,65 @@ socket.on("stromBesaeumer1", function (data) {
         for (i = 0; i < stromBesaeumer1Array.length; i++) {
             stromBesaeumer1Array[i] = parseLine(stromBesaeumer1Array[i]);
         }
-        lineChart1.data.datasets[0].data = stromBesaeumer1Array;
+        lineChartStromBesaeumer1.data.datasets[0].data = stromBesaeumer1Array;
     }
     else {
-        lineChart1.data.datasets[0].data.push({ x: new Date(data.timestamp), y: parseInt(data.value) });
+        lineChartStromBesaeumer1.data.datasets[0].data.push({ x: new Date(data.timestamp), y: parseInt(data.value) });
     }
 
-    configLineChart1.options.scales.x.max = data.currentTime;
+    configStromBesaeumer1.options.scales.x.max = data.currentTime;
     var coff =  1000 * 60 * 5;
-    configLineChart1.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime)-3600000) / coff) * coff);
-    lineChart1.update();
+    configStromBesaeumer1.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime)-3600000) / coff) * coff);
+    lineChartStromBesaeumer1.update();
+    
 })
+
+socket.on("stromBesaeumer2", function (data) {
+    if (Array.isArray(data.value)) {
+        let stromBesaeumer2Array = data.value;
+        for (i = 0; i < stromBesaeumer2Array.length; i++) {
+            stromBesaeumer2Array[i] = parseLine(stromBesaeumer2Array[i]);
+        }
+        lineChartStromBesaeumer2.data.datasets[0].data = stromBesaeumer2Array;
+    }
+    else {
+        lineChartStromBesaeumer2.data.datasets[0].data.push({ x: new Date(data.timestamp), y: parseInt(data.value) });
+    }
+
+    configStromBesaeumer2.options.scales.x.max = data.currentTime;
+    var coff =  1000 * 60 * 5;
+    configStromBesaeumer2.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime)-3600000) / coff) * coff);
+    lineChartStromBesaeumer2.update();
+    
+})
+
+socket.on("anlageAutomatik", function (data) {
+    if (Array.isArray(data.value)) {
+        let anlageAutomatikArray = data.value;
+        for (i = 0; i < anlageAutomatikArray.length; i++) {
+            anlageAutomatikArray[i] = parseLineBooleanValue(anlageAutomatikArray[i]);
+        }
+        lineChartAnlageAutomatik.data.datasets[0].data = anlageAutomatikArray;
+    }
+    else {
+        lineChartAnlageAutomatik.data.datasets[0].data.push({ x: new Date(data.timestamp), y: parseInt(data.value) });
+    }
+
+    lineChartAnlageAutomatik.update();
+    
+})
+
+
 
 function parseLine(elem) {
     return { x: new Date(parseInt(elem[1])), y: parseInt(elem[0]) };
 }
 
+function parseLineBooleanValue(elem) {
+    return { x: new Date(parseInt(elem[1])), y: elem[0] ? 1 : 0 };
+}
+
 socket.on("anlageAutomatik", function (data) {
-    console.log("anlageAutomatik");
     if (data.value) {
         document.getElementById('auto').className = 'on';
     } else {
@@ -38,7 +79,6 @@ socket.on("anlageAutomatik", function (data) {
 });
 
 socket.on("anlageHand", function (data) {
-    console.log("anlageHand");
     if (data.value) {
         document.getElementById('hand').className = 'on';
     } else {
@@ -48,7 +88,6 @@ socket.on("anlageHand", function (data) {
 });
 
 socket.on("anlageStoerung", function (data) {
-    console.log("anlageStoerung");
     if (data.value) {
         document.getElementById('fault').className = 'fault';
     } else {
@@ -57,7 +96,6 @@ socket.on("anlageStoerung", function (data) {
 });
 
 socket.on("anlageRuesten", function (data) {
-    console.log("anlageRuesten");
     if (data.value) {
         document.getElementById('equip').className = 'equip';
     } else {
@@ -66,7 +104,6 @@ socket.on("anlageRuesten", function (data) {
 });
 
 socket.on("istStückzahl", function (data) {
-    console.log("istStückzahl");
     document.getElementById('istStueckzahl').textContent = data.value;
 });
 

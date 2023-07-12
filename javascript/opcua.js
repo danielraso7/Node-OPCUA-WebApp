@@ -85,9 +85,9 @@ module.exports = {
         currentTime: new Date()
       });
 
-        console.log(nodeIdKeys[index]);
-        console.log(dataValue.value.value);
-        console.log(new Date(Date.parse(dataValue.sourceTimestamp)));
+        //console.log(nodeIdKeys[index]);
+        //console.log(dataValue.value.value);
+        //console.log(new Date(Date.parse(dataValue.sourceTimestamp)));
     });
 
   },

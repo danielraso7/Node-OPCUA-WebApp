@@ -1,6 +1,6 @@
-const ctxLineChart1 = document.getElementById('stromBesaeumer1');
+const ctxStromBesaeumer1 = document.getElementById('stromBesaeumer1');
 
-const data1 = {
+const dataStromBesaeumer1 = {
     datasets: [{
         label: 'Strom Besäumer 1',
         backgroundColor: 'rgb(255, 99, 132)',
@@ -10,9 +10,9 @@ const data1 = {
     }]
 };
 
-const configLineChart1 = {
+const configStromBesaeumer1 = {
     type: 'line',
-    data: data1,
+    data: dataStromBesaeumer1,
     plugins: {
         title: {
             text: 'Chart.js Time Scale',
@@ -20,6 +20,12 @@ const configLineChart1 = {
         }
     },
     options: {
+        responsive: true,
+        animation: {     
+            y: {
+            duration: 1 
+            }
+        },
         scales: {
             x: {
                 type: 'time',
@@ -49,7 +55,7 @@ const configLineChart1 = {
     }
 };
 
-const lineChart1 = new Chart(
-    ctxLineChart1,
-    configLineChart1
+const lineChartStromBesaeumer1 = new Chart(
+    ctxStromBesaeumer1,
+    configStromBesaeumer1
 );
