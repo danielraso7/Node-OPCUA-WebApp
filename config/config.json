@@ -2,13 +2,13 @@
     "port": "3700",
     "endpointUrl": "opc.tcp://192.168.10.14:4840",
     "nodeIds": {
-        "stromBesaeumer1": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer1\"", "csv": true },
-        "stromBesaeumer2": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer2\"", "csv": true },
+        "stromBesaeumer1": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer1\"", "csv": true, "hoursRead": 1 },
+        "stromBesaeumer2": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer2\"", "csv": true, "hoursRead": 1 },
         "istStückzahl": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"Iststückzahl\"", "csv": false },
         "geschMitnehmerfoerderer": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"GeschwMitnehmerfoerderer\"", "csv": false },
         "anlageStoerung": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageStoerung\"", "csv": false },
         "anlageRuesten": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageRüsten\"", "csv": false },
-        "anlageAutomatik": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"", "csv": true },
+        "anlageAutomatik": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"", "csv": true, "hoursRead": 24 },
         "anlageHand": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\"", "csv": false }
     }
 }

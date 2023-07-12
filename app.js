@@ -26,11 +26,6 @@ const csvReaderWriter = require("./javascript/csv");
     const io = new Server(server);
     io.sockets.on("connection", function (socket) {
       console.log("Client connected to server!");
-
-      //let csvData = csvReaderWriter.readCSV("./csv/stromBesaemer1.csv");
-      //console.log(csvData);
-
-
       opcua.emitValues(io);
     });
 

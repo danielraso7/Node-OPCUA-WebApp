@@ -9,7 +9,8 @@ const endpointUrl = config.endpointUrl;
 
 let client, session, subscription;
 
-let subscriptionParameters, nodeIdKeys, itemsToMonitor, monitoredItems, dataValueMemory = [];
+let subscriptionParameters, itemsToMonitor, monitoredItems, dataValueMemory = [];
+const nodeIdKeys = Object.keys(config.nodeIds);
 
 module.exports = {
 
@@ -51,7 +52,6 @@ module.exports = {
       queueSize: 100,
     };
 
-    nodeIdKeys = Object.keys(config.nodeIds);
     itemsToMonitor = [];
     for (const nodeId of nodeIdKeys) {
       itemsToMonitor.push({
@@ -76,20 +76,20 @@ module.exports = {
             ";" +
             Date.parse(dataValue.sourceTimestamp) +
             ";" +
-            Date(Date.parse(dataValue.sourceTimestamp)) +
+            new Date(Date.parse(dataValue.sourceTimestamp)) +
             "\n";
         csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
       }
 
       io.sockets.emit(nodeIdKeys[index], {
         value: dataValue.value.value,
-        timestamp: Date(Date.parse(dataValue.sourceTimestamp)),
+        timestamp: new Date(Date.parse(dataValue.sourceTimestamp)),
         // browseName: "Temperature",
       });
 
       // console.log(monitoredItem.itemToMonitor.nodeId.value);
       // console.log(dataValue.value.value);
-      // console.log(Date(Date.parse(dataValue.sourceTimestamp)));
+      // console.log(new Date(Date.parse(dataValue.sourceTimestamp)));
     });
 
   },
@@ -101,17 +101,42 @@ module.exports = {
   },
 
   emitValues: async function (io) {
-    if(client != null && nodeIdKeys != null) {
-      for(i = 0; i < nodeIdKeys.length; i++) {
-        io.sockets.emit(nodeIdKeys[i], {
-          value: dataValueMemory[i].value.value,
-          timestamp: Date(Date.parse(dataValueMemory[i].sourceTimestamp))
+    if(client != null && nodeIdKeys != null && dataValueMemory.length != 0) {
+      nodeIdKeys.forEach((v, i) => {
+        // boolean or int values
+        let emittedValue = dataValueMemory[i].value.value;
+
+        // linechart values as array
+        if (config.nodeIds[v].csv) {
+          let csvData = csvReaderWriter.readCSV(`./csv/${getCurrentDateAsFolderName()}/${v}.csv`);
+          if (config.nodeIds[v].hoursRead == 24) {
+            // we simply return the entire file data and not the "real" last 24 hours
+            emittedValue = [...csvData];
+          } else {
+            // [0] value, [1] timestamp in ms
+            let cutoffTime = Number(csvData[csvData.length - 1][1]) - 3600000 * config.nodeIds[v].hoursRead;
+
+            let cutoffIndex = 0;
+            for (let i = csvData.length - 1; i > 0; i--) {
+              if (csvData[i][1] < cutoffTime) {
+                cutoffIndex = i + 1;
+                break;
+              }
+            }
+            emittedValue = [...csvData.slice(cutoffIndex, csvData.length)];
+            console.log(emittedValue);
+          }
+        }
+          
+        io.sockets.emit(v, {
+          value: emittedValue,
+          timestamp: new Date(Date.parse(dataValueMemory[i].sourceTimestamp))
         });
 
-        // console.log(nodeIdKeys[i]);
+        // console.log(v);
         // console.log(dataValueMemory[i].value.value);
-        // console.log(Date(Date.parse(dataValueMemory[i].sourceTimestamp)));
-      }
+        // console.log(new Date(Date.parse(dataValueMemory[i].sourceTimestamp)));
+      });
     }
   }
 }
