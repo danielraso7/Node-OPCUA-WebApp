@@ -82,6 +82,7 @@ module.exports = {
       io.sockets.emit(nodeIdKeys[index], {
         value: dataValue.value.value,
         timestamp: Date.parse(dataValue.sourceTimestamp),
+        currentTime: new Date()
       });
     });
 
@@ -123,7 +124,8 @@ module.exports = {
 
         io.sockets.emit(v, {
           value: emittedValue,
-          timestamp: Date.parse(dataValueMemory[i].sourceTimestamp)
+          timestamp: Date.parse(dataValueMemory[i].sourceTimestamp),
+          currentTime: new Date()
         });
 
         // console.log(v);

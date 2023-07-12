@@ -16,6 +16,10 @@ socket.on("stromBesaeumer1", function (data) {
     else {
         lineChart1.data.datasets[0].data.push({ x: new Date(data.timestamp), y: parseInt(data.value) });
     }
+
+    configLineChart1.options.scales.x.max = data.currentTime;
+    var coff =  1000 * 60 * 5;
+    configLineChart1.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime)-3600000) / coff) * coff);
     lineChart1.update();
 })
 
