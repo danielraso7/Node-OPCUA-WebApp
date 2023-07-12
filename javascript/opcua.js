@@ -7,7 +7,7 @@ const endpointUrl = config.endpointUrl;
 
 let client, session, subscription;
 
-let subscriptionParameters, nodeIdKeys, itemsToMonitor, monitoredItems, dataV = [];
+let subscriptionParameters, nodeIdKeys, itemsToMonitor, monitoredItems, dataValueMemory = [];
 
 module.exports = {
 
@@ -62,7 +62,7 @@ module.exports = {
 
     
     monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
-      dataV[index] = dataValue;
+      dataValueMemory[index] = dataValue;
       // use "csv" property to determine if we need to write to a csv file
       // either way: use io.socket.emit
       // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
@@ -77,9 +77,9 @@ module.exports = {
         // browseName: "Temperature",
       });
 
-      console.log(monitoredItem.itemToMonitor.nodeId.value);
-      console.log(dataValue.value.value);
-      console.log(Date(Date.parse(dataValue.sourceTimestamp)));
+      // console.log(monitoredItem.itemToMonitor.nodeId.value);
+      // console.log(dataValue.value.value);
+      // console.log(Date(Date.parse(dataValue.sourceTimestamp)));
     });
 
   },
@@ -91,21 +91,17 @@ module.exports = {
   },
 
   emitValues: async function (io) {
-    console.log("Emit Values");
     if(client != null && nodeIdKeys != null) {
-      console.log("Emit Values - Inner");
       for(i = 0; i < nodeIdKeys.length; i++) {
         io.sockets.emit(nodeIdKeys[i], {
-          value: dataV[i].value.value,
-          timestamp: Date(Date.parse(dataV[i].sourceTimestamp))
+          value: dataValueMemory[i].value.value,
+          timestamp: Date(Date.parse(dataValueMemory[i].sourceTimestamp))
         });
 
-        console.log('EV - ' + nodeIdKeys[i]);
-        console.log('EV - ' + dataV[i].value.value);
-        console.log('EV - ' + Date(Date.parse(dataV[i].sourceTimestamp)));
+        // console.log(nodeIdKeys[i]);
+        // console.log(dataValueMemory[i].value.value);
+        // console.log(Date(Date.parse(dataValueMemory[i].sourceTimestamp)));
       }
     }
-    console.log("Emit Values - Done");
   }
-
 }
