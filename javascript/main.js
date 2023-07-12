@@ -26,6 +26,24 @@ socket.on("anlageHand", function (data) {
     
 });
 
+socket.on("anlageStoerung", function (data) {
+    console.log("anlageStoerung");
+    if (data.value){
+        document.getElementById('fault').className = 'fault';
+    } else {
+        document.getElementById('fault').className = 'off';
+    }
+});
+
+socket.on("anlageRuesten", function (data) {
+    console.log("anlageRuesten");
+    if (data.value){
+        document.getElementById('equip').className = 'equip';
+    } else {
+        document.getElementById('equip').className = 'off';
+    }
+});
+
 socket.on("istStückzahl", function (data) {
     console.log("istStückzahl");
     document.getElementById('istStueckzahl').textContent = data.value;   

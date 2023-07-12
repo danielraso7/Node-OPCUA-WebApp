@@ -7,6 +7,8 @@ const endpointUrl = config.endpointUrl;
 
 let client, session, subscription;
 
+let subscriptionParameters, nodeIdKeys, itemsToMonitor, monitoredItems, dataV = [];
+
 module.exports = {
 
  createOPCUAClient: async function (io) {
@@ -41,14 +43,14 @@ module.exports = {
       });
   
 
-    const subscriptionParameters = {
+    subscriptionParameters = {
       samplingInterval: 100,
       discardOldest: true,
       queueSize: 100,
     };
 
-    const nodeIdKeys = Object.keys(config.nodeIds);
-    const itemsToMonitor = [];
+    nodeIdKeys = Object.keys(config.nodeIds);
+    itemsToMonitor = [];
     for (const nodeId of nodeIdKeys) {
       itemsToMonitor.push({
         nodeId: config.nodeIds[nodeId].id,
@@ -56,10 +58,11 @@ module.exports = {
       });
     }
 
-    const monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
+    monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
 
     
     monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
+      dataV[index] = dataValue;
       // use "csv" property to determine if we need to write to a csv file
       // either way: use io.socket.emit
       // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
@@ -85,6 +88,24 @@ module.exports = {
     if (subscription) await subscription.terminate();
     if (session) await session.close();
     if (client) await client.disconnect();
+  },
+
+  emitValues: async function (io) {
+    console.log("Emit Values");
+    if(client != null && nodeIdKeys != null) {
+      console.log("Emit Values - Inner");
+      for(i = 0; i < nodeIdKeys.length; i++) {
+        io.sockets.emit(nodeIdKeys[i], {
+          value: dataV[i].value.value,
+          timestamp: Date(Date.parse(dataV[i].sourceTimestamp))
+        });
+
+        console.log('EV - ' + nodeIdKeys[i]);
+        console.log('EV - ' + dataV[i].value.value);
+        console.log('EV - ' + Date(Date.parse(dataV[i].sourceTimestamp)));
+      }
+    }
+    console.log("Emit Values - Done");
   }
 
 }

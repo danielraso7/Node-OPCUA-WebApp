@@ -23,7 +23,10 @@ const config = require("./config/config.json");
     });
 
     const io = new Server(server);
-    io.sockets.on("connection", function (socket) {console.log("Client connected to server!")});
+    io.sockets.on("connection", function (socket) {
+      console.log("Client connected to server!");
+      opcua.emitValues(io);
+    });
 
     // --------------------------------------------------------
     opcua.createOPCUAClient(io);
