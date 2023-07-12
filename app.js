@@ -4,6 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const opcua = require("./javascript/opcua");
 const config = require("./config/config.json");
+const csvReaderWriter = require("./javascript/csv");
 
 (async () => {
   try {
@@ -25,6 +26,12 @@ const config = require("./config/config.json");
     const io = new Server(server);
     io.sockets.on("connection", function (socket) {
       console.log("Client connected to server!");
+
+      let csvData = csvReaderWriter.readCSV("./csv/stromBesaemer1.csv");
+      console.log(typeof csvData);
+      console.log(csvData);
+
+
       opcua.emitValues(io);
     });
 
