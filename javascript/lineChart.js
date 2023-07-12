@@ -10,11 +10,10 @@ dataSet = [
     { x: '15:49', y: 10 }
 ]
 
-const labels1 = ['12:30', '12:35', '12:40', '12:45', '12:50', '12:55', '13:00', '13:05', '13:10', '13:15', '13:20', '13:25', '13:30', '13:35', '13:40']
+const labels1 = ['13:00', '13:05', '13:10', '13:15', '13:20', '13:25', '13:30', '13:35', '13:40']
 
 
 const data1 = {
-    labels: labels1,
     datasets: [{
         label: 'Strom Besäumer 1',
         backgroundColor: 'rgb(255, 99, 132)',
@@ -50,7 +49,10 @@ const configLineChart1 = {
                 displayFormats: {
                     quarter: 'HH:mm'
                 },
-
+                ticks: {
+                    stepSize: 5,
+                    //maxTicksLimit: 12
+                },
                 distribution: 'linear',
                 title: {
                     display: true,
@@ -85,5 +87,9 @@ function msToHMS(ms) {
     var minutes = parseInt(seconds / 60); // 60 seconds in 1 minute
     // 4- Keep only seconds not extracted to minutes:
     seconds = seconds % 60;
-    return hours + ":" + minutes + ":" + seconds;
+    return padTo2Digits(hours) + ":" + padTo2Digits(minutes) + ":" + padTo2Digits(parseInt(seconds));
 }
+
+function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+  }
