@@ -84,6 +84,10 @@ module.exports = {
         timestamp: Date.parse(dataValue.sourceTimestamp),
         currentTime: new Date()
       });
+
+        console.log(nodeIdKeys[index]);
+        console.log(dataValue.value.value);
+        console.log(new Date(Date.parse(dataValue.sourceTimestamp)));
     });
 
   },
@@ -118,7 +122,6 @@ module.exports = {
               }
             }
             emittedValue = [...csvData.slice(cutoffIndex, csvData.length)];
-            console.log(emittedValue);
           }
         }
 
