@@ -27,9 +27,8 @@ const csvReaderWriter = require("./javascript/csv");
     io.sockets.on("connection", function (socket) {
       console.log("Client connected to server!");
 
-      let csvData = csvReaderWriter.readCSV("./csv/stromBesaemer1.csv");
-      console.log(typeof csvData);
-      console.log(csvData);
+      //let csvData = csvReaderWriter.readCSV("./csv/stromBesaemer1.csv");
+      //console.log(csvData);
 
 
       opcua.emitValues(io);

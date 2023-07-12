@@ -1,6 +1,8 @@
 const config = require("../config/config.json");
 const chalk = require("chalk");
 const { AttributeIds, OPCUAClient, TimestampsToReturn } = require("node-opcua");
+const csvReaderWriter = require("./csv");
+
 
 const endpointUrl = config.endpointUrl;
 //const endpointUrl = "opc.tcp://DESKTOP-H19DHJH:53530/OPCUA/SimulationServer";
@@ -67,8 +69,16 @@ module.exports = {
       // either way: use io.socket.emit
       // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
       if (config.nodeIds[nodeIdKeys[index]].csv) {
-        // TODO
         console.log("create or update csv file");
+        let entry =
+            "" +
+            dataValue.value.value +
+            ";" +
+            Date.parse(dataValue.sourceTimestamp) +
+            ";" +
+            Date(Date.parse(dataValue.sourceTimestamp)) +
+            "\n";
+        csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
       }
 
       io.sockets.emit(nodeIdKeys[index], {
@@ -104,4 +114,16 @@ module.exports = {
       }
     }
   }
+}
+
+function getCurrentDateAsFolderName() {
+    let d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [day, month, year].join('_');
 }
