@@ -112,7 +112,7 @@ module.exports = {
             emittedValue = [...csvData];
           } else {
             // [0] value, [1] timestamp in ms
-            let cutoffTime = Number(csvData[csvData.length - 1][1]) - 3600000 * config.nodeIds[v].hoursRead;
+            let cutoffTime = Date.now() - 3600000 * config.nodeIds[v].hoursRead;
 
             let cutoffIndex = 0;
             for (let i = csvData.length - 1; i > 0; i--) {
