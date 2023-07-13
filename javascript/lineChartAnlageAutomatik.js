@@ -6,7 +6,6 @@ const dataAnlageAutomatik = {
         backgroundColor: 'rgb(102, 205, 0)',
         borderColor: 'rgb(102, 205, 0)',
         data: [
-            {x: "07:05", y: 1}
         ],
     }]
 };
@@ -21,6 +20,7 @@ const configAnlageAutomatik = {
         }
     },
     options: {
+        maintainAspectRatio: false,
         responsive: true,
         animation: {     
             y: {

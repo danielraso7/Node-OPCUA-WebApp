@@ -21,6 +21,7 @@ const configStromBesaeumer1 = {
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         animation: {     
             y: {
             duration: 1 
@@ -55,6 +56,7 @@ const configStromBesaeumer1 = {
         },
     }
 };
+
 
 const lineChartStromBesaeumer1 = new Chart(
     ctxStromBesaeumer1,
