@@ -38,7 +38,7 @@ const configAnlageAutomatik = {
                     quarter: 'HH:mm'
                 },
                 ticks: {
-                    stepSize: 5,
+                    stepSize: 60,
                 },
                 distribution: 'linear',
                 title: {

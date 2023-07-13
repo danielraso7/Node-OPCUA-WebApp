@@ -45,7 +45,8 @@ const configStromBesaeumer2 = {
                 }
             },
             y: {
-                beginAtZero: true,
+                min: 0,
+                max: 100,
                 title: {
                     display: true,
                     text: 'Value'
