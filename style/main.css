@@ -21,6 +21,10 @@ canvas#doughnut {
 
 .chartBox {
     /*width: 1000px;*/
+    height: 250px;
+}
+
+.anlageBox {
     height: 200px;
 }
 
@@ -76,10 +80,10 @@ canvas#doughnut {
 }
 
 .btn-square-md {
-    width: 180px !important;
+    width: 160px !important;
     max-width: 100% !important;
     max-height: 100% !important;
-    height: 160px !important;
+    height: 140px !important;
     text-align: center;
     padding: 0px;
     font-size:32px;

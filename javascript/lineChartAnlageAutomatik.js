@@ -29,7 +29,7 @@ const configAnlageAutomatik = {
         },
         scales: {
             x: {
-                min: '00:00',
+                min: '08:00',
                 type: 'time',
                 time: {
                     unit: 'minute'
@@ -47,8 +47,6 @@ const configAnlageAutomatik = {
                 }
             },
             y: {
-                min: 0,
-                max: 1,
                 ticks: {
                     stepSize: 1,
                 },

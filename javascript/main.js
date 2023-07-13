@@ -54,6 +54,16 @@ socket.on("anlageAutomatik", function (data) {
     }
 
     lineChartAnlageAutomatik.update();
+
+    if (data.value) {
+        //document.getElementById('auto').className = 'on';
+        document.getElementById('auto').classList.remove("btn-secondary");
+        document.getElementById('auto').classList.add("btn-success");
+    } else {
+        //document.getElementById('auto').className = 'off';
+        document.getElementById('auto').classList.remove("btn-success");
+        document.getElementById('auto').classList.add("btn-secondary");
+    }
 })
 
 
@@ -65,19 +75,6 @@ function parseLine(elem) {
 function parseLineBooleanValue(elem) {
     return { x: new Date(parseInt(elem[1])), y: elem[0] == 'true' ? 1 : 0 };
 }
-
-socket.on("anlageAutomatik", function (data) {
-    if (data.value) {
-        //document.getElementById('auto').className = 'on';
-        document.getElementById('auto').classList.remove("btn-secondary");
-        document.getElementById('auto').classList.add("btn-success");
-    } else {
-        //document.getElementById('auto').className = 'off';
-        document.getElementById('auto').classList.remove("btn-success");
-        document.getElementById('auto').classList.add("btn-secondary");
-    }
-
-});
 
 socket.on("anlageHand", function (data) {
     if (data.value) {
