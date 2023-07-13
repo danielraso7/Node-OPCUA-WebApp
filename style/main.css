@@ -3,19 +3,25 @@ body {
     font-family: arial;
 }
 
-div:has(#gauge) {
-    width: 500px;
-    height: 400px;
+.gaugeBox {
+    width: 200px;
+    height: 200px;
 }
 
-div:has(#doughnut) {
+canvas#gauge {
+    width: 182px;
+    height: 182px;
+    margin-top: -90px;
+}
+
+canvas#doughnut {
     width: 500px;
     height: 500px;
 }
 
 .chartBox {
-    width: 1000px;
-    height: 400px;
+    /*width: 1000px;*/
+    height: 200px;
 }
 
 .amount {
@@ -67,4 +73,16 @@ div:has(#doughnut) {
     justify-content: center;
     align-items: center;
     background-color: darkturquoise;
+}
+
+.btn-square-md {
+    width: 180px !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 160px !important;
+    text-align: center;
+    padding: 0px;
+    font-size:32px;
+    color: white;
+    border-radius: 0.7rem!important;
 }

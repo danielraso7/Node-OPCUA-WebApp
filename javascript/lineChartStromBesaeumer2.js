@@ -20,6 +20,7 @@ const configStromBesaeumer2 = {
         }
     },
     options: {
+        maintainAspectRatio: false,
         responsive: true,
         animation: {     
             y: {

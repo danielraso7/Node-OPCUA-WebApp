@@ -82,6 +82,7 @@ const configGauge = {
     type: 'doughnut',
     data: dataGauge,
     options: {
+        maintainAspectRatio: false,
         responsive: true,
         plugins: {
             tooltip: {

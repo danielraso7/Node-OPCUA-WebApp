@@ -68,39 +68,55 @@ function parseLineBooleanValue(elem) {
 
 socket.on("anlageAutomatik", function (data) {
     if (data.value) {
-        document.getElementById('auto').className = 'on';
+        //document.getElementById('auto').className = 'on';
+        document.getElementById('auto').classList.remove("btn-secondary");
+        document.getElementById('auto').classList.add("btn-success");
     } else {
-        document.getElementById('auto').className = 'off';
+        //document.getElementById('auto').className = 'off';
+        document.getElementById('auto').classList.remove("btn-success");
+        document.getElementById('auto').classList.add("btn-secondary");
     }
 
 });
 
 socket.on("anlageHand", function (data) {
     if (data.value) {
-        document.getElementById('hand').className = 'on';
+        //document.getElementById('hand').className = 'on';
+        document.getElementById('hand').classList.remove("btn-secondary");
+        document.getElementById('hand').classList.add("btn-success");
     } else {
-        document.getElementById('hand').className = 'off';
+        //document.getElementById('hand').className = 'off';
+        document.getElementById('hand').classList.remove("btn-success");
+        document.getElementById('hand').classList.add("btn-secondary");
     }
 
 });
 
 socket.on("anlageStoerung", function (data) {
     if (data.value) {
-        document.getElementById('fault').className = 'fault';
+        //document.getElementById('fault').className = 'fault';
+        document.getElementById('fault').classList.remove("btn-secondary");
+        document.getElementById('fault').classList.add("btn-danger");
     } else {
-        document.getElementById('fault').className = 'off';
+        //document.getElementById('fault').className = 'off';
+        document.getElementById('fault').classList.remove("btn-danger");
+        document.getElementById('fault').classList.add("btn-secondary");
     }
 });
 
 socket.on("anlageRuesten", function (data) {
     if (data.value) {
-        document.getElementById('equip').className = 'equip';
+        //document.getElementById('equip').className = 'equip';
+        document.getElementById('equip').classList.remove("btn-secondary");
+        document.getElementById('equip').classList.add("btn-info");
     } else {
-        document.getElementById('equip').className = 'off';
+        //document.getElementById('equip').className = 'off';
+        document.getElementById('equip').classList.remove("btn-info");
+        document.getElementById('equip').classList.add("btn-secondary");
     }
 });
 
 socket.on("istStückzahl", function (data) {
-    document.getElementById('istStueckzahl').textContent = data.value;
+    document.getElementById('istStueckzahl').textContent = "Stück\r\n" + data.value;
 });
 
