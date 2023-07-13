@@ -18,6 +18,10 @@ div:has(#doughnut) {
     height: 400px;
 }
 
+.amount {
+    background-color: darkblue;
+}
+
 .square {
     width: 100px;
     height: 100px;

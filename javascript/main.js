@@ -18,10 +18,9 @@ socket.on("stromBesaeumer1", function (data) {
     }
 
     configStromBesaeumer1.options.scales.x.max = data.currentTime;
-    var coff =  1000 * 60 * 5;
-    configStromBesaeumer1.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime)-3600000) / coff) * coff);
+    var coff = 1000 * 60 * 5;
+    configStromBesaeumer1.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime) - 3600000) / coff) * coff);
     lineChartStromBesaeumer1.update();
-    
 })
 
 socket.on("stromBesaeumer2", function (data) {
@@ -37,10 +36,9 @@ socket.on("stromBesaeumer2", function (data) {
     }
 
     configStromBesaeumer2.options.scales.x.max = data.currentTime;
-    var coff =  1000 * 60 * 5;
-    configStromBesaeumer2.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime)-3600000) / coff) * coff);
+    var coff = 1000 * 60 * 5;
+    configStromBesaeumer2.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime) - 3600000) / coff) * coff);
     lineChartStromBesaeumer2.update();
-    
 })
 
 socket.on("anlageAutomatik", function (data) {
@@ -52,11 +50,10 @@ socket.on("anlageAutomatik", function (data) {
         lineChartAnlageAutomatik.data.datasets[0].data = anlageAutomatikArray;
     }
     else {
-        lineChartAnlageAutomatik.data.datasets[0].data.push({ x: new Date(data.timestamp), y: parseInt(data.value) });
+        lineChartAnlageAutomatik.data.datasets[0].data.push({ x: new Date(data.timestamp), y: data.value == 'true' ? 1 : 0 });
     }
 
     lineChartAnlageAutomatik.update();
-    
 })
 
 
@@ -66,7 +63,7 @@ function parseLine(elem) {
 }
 
 function parseLineBooleanValue(elem) {
-    return { x: new Date(parseInt(elem[1])), y: elem[0] ? 1 : 0 };
+    return { x: new Date(parseInt(elem[1])), y: elem[0] == 'true' ? 1 : 0 };
 }
 
 socket.on("anlageAutomatik", function (data) {

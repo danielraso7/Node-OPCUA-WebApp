@@ -3,9 +3,10 @@ const ctxAnlageAutomatik = document.getElementById('anlageAutomatik');
 const dataAnlageAutomatik = {
     datasets: [{
         label: 'Automatik Betrieb',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgb(102, 205, 0)',
+        borderColor: 'rgb(102, 205, 0)',
         data: [
+            {x: "07:05", y: 1}
         ],
     }]
 };
