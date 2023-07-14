@@ -23,6 +23,27 @@ const csvReaderWriter = require("./javascript/csv");
         console.log("visit http://localhost:" + config.port);
     });
 
+    server.on("error", () => {
+      console.log("Error has happened");
+    })
+    .on("warning", () => {
+      console.log("Warning has happened");
+    })
+    .on("internal_error", () => {
+      console.log("Internal error happened");
+    })
+    .on("keepalive_failure", (state) => {
+      console.log(
+          `Session encountered a keepalive error: ${state !== undefined ? state.toString() : "No state provided."}`
+      );
+    })
+    .on("reconnection_attempt_has_failed", (_, message) => {
+      console.log(`Client reconnection attempt has failed: ${message}`);
+    })
+    .on("start_reconnection", () => {
+      console.log(`Client is starting the reconnection process.`);
+    });
+
     const io = new Server(server);
     io.sockets.on("connection", function (socket) {
       console.log("Client connected to server!");
