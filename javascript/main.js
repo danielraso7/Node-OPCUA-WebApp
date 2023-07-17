@@ -18,7 +18,7 @@ socket.on("stromBesaeumer1", function (data) {
     }
 
     configStromBesaeumer1.options.scales.x.max = data.currentTime;
-    var coff = 1000 * 60 * 5;
+    let coff = 1000 * 60 * 5;
     configStromBesaeumer1.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime) - 3600000) / coff) * coff);
     lineChartStromBesaeumer1.update();
 })
@@ -36,7 +36,7 @@ socket.on("stromBesaeumer2", function (data) {
     }
 
     configStromBesaeumer2.options.scales.x.max = data.currentTime;
-    var coff = 1000 * 60 * 5;
+    let coff = 1000 * 60 * 5;
     configStromBesaeumer2.options.scales.x.min = new Date(Math.floor((Date.parse(data.currentTime) - 3600000) / coff) * coff);
     lineChartStromBesaeumer2.update();
 })
