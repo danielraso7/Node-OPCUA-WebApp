@@ -3,8 +3,10 @@ const ctxStromBesaeumer2 = document.getElementById('stromBesaeumer2');
 const dataStromBesaeumer2 = {
     datasets: [{
         label: 'Strom Besäumer 2',
-        backgroundColor: 'gold',
-        borderColor: 'gold',
+        backgroundColor: '#DAA520',
+        borderColor: '#DAA520',
+        borderWidth: 1,
+        pointRadius: 1,
         data: [
         ],
     }]

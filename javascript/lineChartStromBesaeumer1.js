@@ -5,6 +5,8 @@ const dataStromBesaeumer1 = {
         label: 'Strom Besäumer 1',
         backgroundColor: '#4682B4',
         borderColor: '#4682B4',
+        borderWidth: 1,
+        pointRadius: 1,
         data: [
         ],
     }]

@@ -5,6 +5,8 @@ const dataAnlageAutomatik = {
         label: 'Automatik Betrieb',
         backgroundColor: 'limegreen',
         borderColor: 'limegreen',
+        borderWidth: 1,
+        pointRadius: 1,
         data: [
         ],
     }]

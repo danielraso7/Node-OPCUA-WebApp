@@ -21,12 +21,12 @@ canvas#doughnut {
 
 .chartBox {
     /*width: 1000px;*/
-    height: 350px;
+    height: 250px;
     padding-top: 50px;
 }
 
 .anlageBox {
-    height: 250px;
+    height: 200px;
 }
 
 .amount {
