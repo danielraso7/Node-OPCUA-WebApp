@@ -3,8 +3,8 @@ const ctxAnlageAutomatik = document.getElementById('anlageAutomatik');
 const dataAnlageAutomatik = {
     datasets: [{
         label: 'Automatik Betrieb',
-        backgroundColor: 'rgb(102, 205, 0)',
-        borderColor: 'rgb(102, 205, 0)',
+        backgroundColor: 'limegreen',
+        borderColor: 'limegreen',
         data: [
         ],
     }]

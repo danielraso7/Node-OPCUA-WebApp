@@ -2,17 +2,17 @@ const ctxDoughnut = document.getElementById('doughnut');
 
 const dataDoughnut = {
   labels: [
-    'Störung',
-    'Rüsten',
-    'Produktiv'
+    'Störung   ',
+    'Rüsten    ',
+    'Produktiv '
   ],
   datasets: [{
     label: '',
     data: [300, 50, 100],
     backgroundColor: [
-      'rgb(255, 99, 132)',
-      'rgb(54, 162, 235)',
-      'rgb(102, 205, 0)'
+      '#dc3545',
+      '#0dcaf0',
+      'limegreen'
     ],
     hoverOffset: 4
   }]
@@ -28,7 +28,7 @@ const configDoughnut = {
             enabled: true 
         },
         legend: {
-          position: 'right'
+          position: 'bottom'
         }
       }   
   },

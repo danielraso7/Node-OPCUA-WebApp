@@ -1,17 +1,17 @@
 body {
     font-size: 14;
-    font-family: arial;
+    font-family: Arial;
 }
 
 .gaugeBox {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
 }
 
 canvas#gauge {
     width: 182px;
     height: 182px;
-    margin-top: -90px;
+    margin-top: -125px;
 }
 
 canvas#doughnut {
@@ -21,26 +21,16 @@ canvas#doughnut {
 
 .chartBox {
     /*width: 1000px;*/
-    height: 250px;
+    height: 350px;
+    padding-top: 50px;
 }
 
 .anlageBox {
-    height: 200px;
+    height: 250px;
 }
 
 .amount {
     background-color: darkblue;
-}
-
-.square {
-    width: 100px;
-    height: 100px;
-    border-radius: 5px;
-    border: 1px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 5px;
 }
 
 .on {
@@ -79,14 +69,20 @@ canvas#doughnut {
     background-color: darkturquoise;
 }
 
-.btn-square-md {
-    width: 160px !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    height: 140px !important;
-    text-align: center;
-    padding: 0px;
-    font-size:32px;
+.btn-light {
+    background-color: lightgray;
+}
+
+.btn-success {
+    background-color: limegreen;
+}
+
+.btn-info {
     color: white;
-    border-radius: 0.7rem!important;
+}
+
+.btn {
+    width: 100px;
+    height: 100px;
+    font-size: 1.3em;
 }

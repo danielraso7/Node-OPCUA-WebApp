@@ -42,27 +42,32 @@ socket.on("stromBesaeumer2", function (data) {
 })
 
 socket.on("anlageAutomatik", function (data) {
+    let setButtonToSuccessOrLight;
+
     if (Array.isArray(data.value)) {
         let anlageAutomatikArray = data.value;
         for (i = 0; i < anlageAutomatikArray.length; i++) {
             anlageAutomatikArray[i] = parseLineBooleanValue(anlageAutomatikArray[i]);
         }
         lineChartAnlageAutomatik.data.datasets[0].data = anlageAutomatikArray;
-    }
-    else {
-        lineChartAnlageAutomatik.data.datasets[0].data.push({ x: new Date(data.timestamp), y: data.value == 'true' ? 1 : 0 });
+
+        setButtonToSuccessOrLight = anlageAutomatikArray[anlageAutomatikArray.length - 1].y; // .y because of object, see parseLineBooleanValue
+    } else {
+        lineChartAnlageAutomatik.data.datasets[0].data.push({ x: new Date(data.timestamp), y: data.value ? 1 : 0 });
+
+        setButtonToSuccessOrLight = data.value;
     }
 
     lineChartAnlageAutomatik.update();
 
-    if (data.value) {
+    if (setButtonToSuccessOrLight) {
         //document.getElementById('auto').className = 'on';
-        document.getElementById('auto').classList.remove("btn-secondary");
-        document.getElementById('auto').classList.add("btn-success");
+        document.getElementById("auto").classList.remove("btn-light");
+        document.getElementById("auto").classList.add("btn-success");
     } else {
         //document.getElementById('auto').className = 'off';
-        document.getElementById('auto').classList.remove("btn-success");
-        document.getElementById('auto').classList.add("btn-secondary");
+        document.getElementById("auto").classList.remove("btn-success");
+        document.getElementById("auto").classList.add("btn-light");
     }
 })
 
@@ -79,12 +84,12 @@ function parseLineBooleanValue(elem) {
 socket.on("anlageHand", function (data) {
     if (data.value) {
         //document.getElementById('hand').className = 'on';
-        document.getElementById('hand').classList.remove("btn-secondary");
+        document.getElementById('hand').classList.remove("btn-light");
         document.getElementById('hand').classList.add("btn-success");
     } else {
         //document.getElementById('hand').className = 'off';
         document.getElementById('hand').classList.remove("btn-success");
-        document.getElementById('hand').classList.add("btn-secondary");
+        document.getElementById('hand').classList.add("btn-light");
     }
 
 });
@@ -92,24 +97,24 @@ socket.on("anlageHand", function (data) {
 socket.on("anlageStoerung", function (data) {
     if (data.value) {
         //document.getElementById('fault').className = 'fault';
-        document.getElementById('fault').classList.remove("btn-secondary");
+        document.getElementById('fault').classList.remove("btn-light");
         document.getElementById('fault').classList.add("btn-danger");
     } else {
         //document.getElementById('fault').className = 'off';
         document.getElementById('fault').classList.remove("btn-danger");
-        document.getElementById('fault').classList.add("btn-secondary");
+        document.getElementById('fault').classList.add("btn-light");
     }
 });
 
 socket.on("anlageRuesten", function (data) {
     if (data.value) {
         //document.getElementById('equip').className = 'equip';
-        document.getElementById('equip').classList.remove("btn-secondary");
+        document.getElementById('equip').classList.remove("btn-light");
         document.getElementById('equip').classList.add("btn-info");
     } else {
         //document.getElementById('equip').className = 'off';
         document.getElementById('equip').classList.remove("btn-info");
-        document.getElementById('equip').classList.add("btn-secondary");
+        document.getElementById('equip').classList.add("btn-light");
     }
 });
 

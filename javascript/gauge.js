@@ -32,15 +32,16 @@ const gaugeNeedle = {
         ctx.restore();
 
         // value text
-        ctx.font = '30px Helvetica';
+        ctx.font = '30px Arial';
         ctx.fillStyle = '#444';
         ctx.fillText(needleValue, cx, cy + 30);
+        ctx.font = "20px Arial";
         ctx.fillText('m/min', cx, cy + 60);
         ctx.textAlign = 'center';
         ctx.restore();
 
         // legend text
-        ctx.font = '20px Helvetica';
+        ctx.font = '15px Arial';
         ctx.fillStyle = '#444';
         var labelText = 10
         chart._metasets[0].data.forEach((element, index) => {
