@@ -8,7 +8,7 @@ socket.on("geschMitnehmerfoerderer", function (data) {
 socket.on("stromBesaeumer1", function (data) {
     if (Array.isArray(data.value)) {
         let stromBesaeumer1Array = data.value;
-        for (i = 0; i < stromBesaeumer1Array.length; i++) {
+        for (let i = 0; i < stromBesaeumer1Array.length; i++) {
             stromBesaeumer1Array[i] = parseLine(stromBesaeumer1Array[i]);
         }
         lineChartStromBesaeumer1.data.datasets[0].data = stromBesaeumer1Array;
@@ -26,7 +26,7 @@ socket.on("stromBesaeumer1", function (data) {
 socket.on("stromBesaeumer2", function (data) {
     if (Array.isArray(data.value)) {
         let stromBesaeumer2Array = data.value;
-        for (i = 0; i < stromBesaeumer2Array.length; i++) {
+        for (let i = 0; i < stromBesaeumer2Array.length; i++) {
             stromBesaeumer2Array[i] = parseLine(stromBesaeumer2Array[i]);
         }
         lineChartStromBesaeumer2.data.datasets[0].data = stromBesaeumer2Array;
@@ -46,7 +46,7 @@ socket.on("anlageAutomatik", function (data) {
 
     if (Array.isArray(data.value)) {
         let anlageAutomatikArray = data.value;
-        for (i = 0; i < anlageAutomatikArray.length; i++) {
+        for (let i = 0; i < anlageAutomatikArray.length; i++) {
             anlageAutomatikArray[i] = parseLineBooleanValue(anlageAutomatikArray[i]);
         }
         lineChartAnlageAutomatik.data.datasets[0].data = anlageAutomatikArray;

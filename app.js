@@ -4,7 +4,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 const opcua = require("./javascript/opcua");
 const config = require("./config/config.json");
-const csvReaderWriter = require("./javascript/csv");
 
 (async () => {
   try {
@@ -31,21 +30,10 @@ const csvReaderWriter = require("./javascript/csv");
     })
     .on("internal_error", () => {
       console.log("Internal error happened");
-    })
-    .on("keepalive_failure", (state) => {
-      console.log(
-          `Session encountered a keepalive error: ${state !== undefined ? state.toString() : "No state provided."}`
-      );
-    })
-    .on("reconnection_attempt_has_failed", (_, message) => {
-      console.log(`Client reconnection attempt has failed: ${message}`);
-    })
-    .on("start_reconnection", () => {
-      console.log(`Client is starting the reconnection process.`);
     });
 
     const io = new Server(server);
-    io.sockets.on("connection", function (socket) {
+    io.sockets.on("connection", function () {
       console.log("Client connected to server!");
       opcua.emitValues(io);
     });

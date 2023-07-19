@@ -24,9 +24,9 @@ const configStromBesaeumer2 = {
     options: {
         maintainAspectRatio: false,
         responsive: true,
-        animation: {     
+        animation: {
             y: {
-            duration: 1 
+                duration: 1
             }
         },
         scales: {

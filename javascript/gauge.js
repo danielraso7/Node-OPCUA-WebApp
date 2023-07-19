@@ -3,15 +3,15 @@ const ctxGauge = document.getElementById('gauge');
 // gaugeNeedle block
 const gaugeNeedle = {
     id: 'gaugeNeedle',
-    afterDatasetDraw(chart, args, options){
+    afterDatasetDraw(chart, args, options) {
         const { ctx, configGauge, data, chartArea: { top, bottom, left, right, width, height } } = chart;
 
         ctx.save();
         const needleValue = data.datasets[0].needleValue;
-        const dataTotal = data.datasets[0].data.reduce( (a,b) => a + b, 0);
-        const angle = Math.PI + ( 1 / dataTotal * needleValue * Math.PI);
+        const dataTotal = data.datasets[0].data.reduce((a, b) => a + b, 0);
+        const angle = Math.PI + (1 / dataTotal * needleValue * Math.PI);
 
-        const cx = width/2;
+        const cx = width / 2;
         const cy = chart._metasets[0].data[0].y;
 
         // needle
@@ -45,9 +45,9 @@ const gaugeNeedle = {
         ctx.fillStyle = '#444';
         var labelText = 10
         chart._metasets[0].data.forEach((element, index) => {
-            var lx = element.x - Math.cos(element.endAngle - Math.PI) * (element.innerRadius-20);
-            const ly = element.y - Math.sin(element.endAngle - Math.PI) * (element.innerRadius-20);    
-            
+            var lx = element.x - Math.cos(element.endAngle - Math.PI) * (element.innerRadius - 20);
+            const ly = element.y - Math.sin(element.endAngle - Math.PI) * (element.innerRadius - 20);
+
             if (index == 9) {
                 lx -= 5
             }
@@ -56,12 +56,12 @@ const gaugeNeedle = {
             labelText += data.datasets[0].data[index]
         });
         ctx.fillText('0', chart._metasets[0].data[0].x - chart._metasets[0].data[0].innerRadius + 15, chart._metasets[0].data[0].y);
-        
+
         ctx.restore();
     }
 }
 
-const dataGauge = {    
+const dataGauge = {
     labels: [],
     datasets: [{
         label: '# of Votes',
@@ -76,7 +76,7 @@ const dataGauge = {
         circumference: 180,
         rotation: 270,
         borderRadius: 5,
-    }]  
+    }]
 }
 
 const configGauge = {
@@ -87,14 +87,14 @@ const configGauge = {
         responsive: true,
         plugins: {
             tooltip: {
-                enabled: false 
+                enabled: false
             }
-        }   
+        }
     },
     plugins: [gaugeNeedle]
 }
 
 const gauge = new Chart(
-    ctxGauge, 
+    ctxGauge,
     configGauge
 );
