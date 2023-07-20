@@ -9,6 +9,9 @@
         "anlageStoerung": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageStoerung\"", "csv": false },
         "anlageRuesten": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageRüsten\"", "csv": false },
         "anlageAutomatik": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"", "csv": true, "hoursRead": 24 },
-        "anlageHand": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\"", "csv": false }
+        "anlageHand": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\"", "csv": false },
+        "nichtgeplanterStillstand": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"NichtgeplanterStillstand\"", "csv": false },
+        "geplanterStillstandRuesten": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanterStillstandRuesten\"", "csv": false },
+        "produktionszeit": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Produktionszeit\"", "csv": false }
     }
 }

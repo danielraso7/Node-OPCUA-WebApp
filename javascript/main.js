@@ -122,3 +122,18 @@ socket.on("istStückzahl", function (data) {
     document.getElementById('istStueckzahl').textContent = "Stück\r\n" + data.value;
 });
 
+socket.on("nichtgeplanterStillstand", function (data) {
+    dataDoughnut.datasets[0].data[0] = data.value;
+    doughnut.update();
+});
+
+socket.on("geplanterStillstandRuesten", function (data) {
+    dataDoughnut.datasets[0].data[1] = data.value;
+    doughnut.update();
+});
+
+socket.on("produktionszeit", function (data) {
+    dataDoughnut.datasets[0].data[2] = data.value;
+    doughnut.update();
+});
+
