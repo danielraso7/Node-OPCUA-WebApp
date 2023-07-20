@@ -123,17 +123,22 @@ socket.on("istStückzahl", function (data) {
 });
 
 socket.on("nichtgeplanterStillstand", function (data) {
-    dataDoughnut.datasets[0].data[0] = data.value;
+    doughnut.data.datasets[0].data[0] = parseInt(data.value);
     doughnut.update();
 });
 
 socket.on("geplanterStillstandRuesten", function (data) {
-    dataDoughnut.datasets[0].data[1] = data.value;
+    doughnut.data.datasets[0].data[1] = parseInt(data.value);
     doughnut.update();
 });
 
 socket.on("produktionszeit", function (data) {
-    dataDoughnut.datasets[0].data[2] = data.value;
+    doughnut.data.datasets[0].data[2] = parseInt(data.value);
     doughnut.update();
 });
+
+// socket.on("geplanteNichtproduktion", function (date) {
+//     doughnut.data.datasets[0].data[3] = parseInt(date.value);
+//     doughnut.update();
+// });
 
