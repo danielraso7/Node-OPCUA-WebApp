@@ -168,12 +168,12 @@ async function createMonitoringItems(io) {
 
 async function createSubscription() {
   subscription = await session.createSubscription2({
-    requestedPublishingInterval: 250,
-    requestedMaxKeepAliveCount: 50,
-    requestedLifetimeCount: 6000,
-    maxNotificationsPerPublish: 1000,
+    requestedPublishingInterval: 1000,
+    requestedLifetimeCount: 100,
+    requestedMaxKeepAliveCount: 10,
+    maxNotificationsPerPublish: 100,
     publishingEnabled: true,
-    priority: 10,
+    priority: 10
   });
 
   subscription
