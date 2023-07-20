@@ -12,6 +12,7 @@
         "anlageHand": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\"", "csv": false },
         "nichtgeplanterStillstand": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"NichtgeplanterStillstand\"", "csv": false },
         "geplanterStillstandRuesten": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanterStillstandRuesten\"", "csv": false },
-        "produktionszeit": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Produktionszeit\"", "csv": false }
+        "produktionszeit": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Produktionszeit\"", "csv": false },
+        "geplanteNichtproduktion": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanteNichtproduktion\"", "csv": false }
     }
 }
