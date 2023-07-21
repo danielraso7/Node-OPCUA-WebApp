@@ -1,6 +1,9 @@
 {
     "port": "3700",
     "endpointUrl": "opc.tcp://192.168.10.14:4840",
+    "windowsUrl": "192.168.10.13",
+    "username": "ae",
+    "password": "ae2020",
     "nodeIds": {
         "stromBesaeumer1": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer1\"", "csv": true, "hoursRead": 1 },
         "stromBesaeumer2": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer2\"", "csv": true, "hoursRead": 1 },
@@ -11,7 +14,10 @@
         "anlageAutomatik": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"", "csv": true, "hoursRead": 24 },
         "anlageHand": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\"", "csv": false },
         "nichtgeplanterStillstand": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"NichtgeplanterStillstand\"", "csv": false },
-        "geplanterStillstandRuesten": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanterStillstandRuesten\"", "csv": false },
+        "geplanterStillstandRuesten": {
+            "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanterStillstandRuesten\"",
+            "csv": false
+        },
         "produktionszeit": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Produktionszeit\"", "csv": false },
         "geplanteNichtproduktion": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanteNichtproduktion\"", "csv": false }
     }
