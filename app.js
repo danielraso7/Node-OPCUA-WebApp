@@ -41,6 +41,9 @@ const config = require("./config/config.json");
     // --------------------------------------------------------
     opcua.createOPCUAClient(io);
 
+    // run everyday at 11 pm
+    runAtSpecificTimeOfDay(23,0,() => { opcua.storeLogData();});
+
     // detect CTRL+C and close
     process.once("SIGINT", async () => {
       console.log("shutting down client");
@@ -55,3 +58,20 @@ const config = require("./config/config.json");
     process.exit(-1);
   }
 })();
+
+function runAtSpecificTimeOfDay(hour, minutes, func)
+{
+  const twentyFourHours = 86400000;
+  const now = new Date();
+  let eta_ms = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minutes, 0, 0).getTime() - now;
+  if (eta_ms < 0)
+  {
+    eta_ms += twentyFourHours;
+  }
+  setTimeout(function() {
+    //run once
+    func();
+    // run every 24 hours from now on
+    setInterval(func, twentyFourHours);
+  }, eta_ms);
+}

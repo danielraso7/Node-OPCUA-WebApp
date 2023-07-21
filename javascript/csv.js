@@ -26,5 +26,17 @@ module.exports = {
             .map(e => e.slice(0, e.lastIndexOf(";"))) // remove the readable timestamp column from csv as its not needed here
             .map(e => e.split(';').map(e => e.trim())); // split each line to array
         return data.slice(0, data.length - 1) // - 1 because the last line is an empty line;
+    },
+
+    deleteCSV: (filepath) => {
+        if(fs.existsSync(filepath)) {
+            fs.unlink(filepath, (err) => {
+                if (err) {
+                    throw err;
+                }
+            
+                console.log(`Deleted ${filepath} successfully.`);
+            });
+        }
     }
 }

@@ -94,6 +94,22 @@ module.exports = {
         // console.log(new Date(Date.parse(dataValueMemory[i].sourceTimestamp)));
       });
     }
+  },
+
+  storeLogData: function () {
+    console.log("Storing log data");
+    let filepath = `./csv/${getCurrentDateAsFolderName()}.csv`;
+    csvReaderWriter.deleteCSV(filepath)
+    let content = "";
+    nodeIdKeys.forEach((v, i) => {
+      content += `${v};`;
+      //csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}.csv`, `${v};`);
+    });
+    content += "\n";
+    nodeIdKeys.forEach((v, i) => {
+      content += `${dataValueMemory[i].value.value};`;
+    });
+    csvReaderWriter.appendToCSV(filepath, content);
   }
 }
 
@@ -106,7 +122,7 @@ function getCurrentDateAsFolderName() {
   if (month.length < 2) month = '0' + month;
   if (day.length < 2) day = '0' + day;
 
-  return [day, month, year].join('_');
+  return [year, month, day].join('_');
 }
 
 async function create(io) {
