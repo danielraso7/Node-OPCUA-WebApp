@@ -115,7 +115,7 @@ async function create(io) {
 
   await createSession();
 
-  await createSubscription();
+  await createSubscription(io);
 
   await createMonitoringItems(io);
 }
@@ -166,7 +166,7 @@ async function createMonitoringItems(io) {
   });
 }
 
-async function createSubscription() {
+async function createSubscription(io) {
   subscription = await session.createSubscription2({
     requestedPublishingInterval: 1000,
     requestedLifetimeCount: 100,
@@ -179,6 +179,7 @@ async function createSubscription() {
   subscription
     .on("keepalive", function () {
       console.log(" SUBSCRIPTION KEEPALIVE ------------------------------->");
+      emitCurrentDataValues(io);
     })
     .on("terminated", function () {
       console.log(" SUBSCRIPTION TERMINATED ------------------------------>");
@@ -194,4 +195,20 @@ async function createSubscription() {
 async function createSession() {
   session = await client.createSession();
   console.log(chalk.yellow(" session created"));
+}
+
+async function emitCurrentDataValues(io){
+  console.log("emit current data values")
+  for (const nodeId of nodeIdKeys) {
+    const currentDataValue = await session.read({
+      nodeId: config.nodeIds[nodeId].id,
+      attributeId: AttributeIds.Value,
+    });
+
+    io.sockets.emit(nodeId, {
+      value: currentDataValue.value.value,
+      timestamp: Date.parse(currentDataValue.sourceTimestamp),
+      currentTime: new Date()
+    });
+  }
 }
