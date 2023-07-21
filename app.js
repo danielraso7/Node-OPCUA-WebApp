@@ -39,11 +39,17 @@ const puppeteer = require('puppeteer');
       opcua.emitValues(io);
     });
 
+    // set up folder hierarchy (if not existent)
+    opcua.createFolderHierarchy();
+
     // --------------------------------------------------------
     opcua.createOPCUAClient(io);
 
     // run everyday at 11 pm
-    runAtSpecificTimeOfDay(23,0,() => { opcua.storeLogData();});
+    runAtSpecificTimeOfDay(23,0,() => { 
+      opcua.storeLogData();
+      screenShotWebsite();
+    });
 
     // detect CTRL+C and close
     process.once("SIGINT", async () => {

@@ -1,7 +1,7 @@
 const config = require("../config/config.json");
 const chalk = require("chalk");
 const { AttributeIds, OPCUAClient, TimestampsToReturn } = require("node-opcua");
-const csvReaderWriter = require("./csv");
+const fileHandler = require("./file");
 
 const endpointUrl = config.endpointUrl;
 //const endpointUrl = "opc.tcp://DESKTOP-H19DHJH:53530/OPCUA/SimulationServer";
@@ -64,7 +64,7 @@ module.exports = {
 
         // linechart values as array
         if (config.nodeIds[v].csv) {
-          let csvData = csvReaderWriter.readCSV(`./csv/${getCurrentDateAsFolderName()}/${v}.csv`);
+          let csvData = fileHandler.readCSV(`${config.logPath}/${getCurrentDateAsFolderName()}/${v}.csv`);
           if (config.nodeIds[v].hoursRead == 24) {
             // we simply return the entire file data and not the "real" last 24 hours
             emittedValue = [...csvData];
@@ -98,18 +98,22 @@ module.exports = {
 
   storeLogData: function () {
     console.log("Storing log data");
-    let filepath = `./csv/${getCurrentDateAsFolderName()}.csv`;
-    csvReaderWriter.deleteCSV(filepath)
+    let filepath = `${config.logPath}/${getCurrentDateAsFolderName()}.csv`;
+    fileHandler.deleteCSV(filepath)
     let content = "";
     nodeIdKeys.forEach((v, i) => {
       content += `${v};`;
-      //csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}.csv`, `${v};`);
+      //fileHandler.appendToCSV(`${config.logPath}/${getCurrentDateAsFolderName()}.csv`, `${v};`);
     });
     content += "\n";
     nodeIdKeys.forEach((v, i) => {
       content += `${dataValueMemory[i].value.value};`;
     });
-    csvReaderWriter.appendToCSV(filepath, content);
+    fileHandler.appendToCSV(filepath, content);
+  },
+
+  createFolderHierarchy: function() {
+    fileHandler.createFolderHierarchy(config);
   }
 }
 
@@ -167,7 +171,7 @@ async function createMonitoringItems(io) {
         ";" +
         new Date(Date.parse(dataValue.sourceTimestamp)) +
         "\n";
-      csvReaderWriter.appendToCSV(`./csv/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
+        fileHandler.appendToCSV(`${config.logPath}/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
     }
 
     io.sockets.emit(nodeIdKeys[index], {
@@ -226,5 +230,7 @@ async function emitCurrentDataValues(io){
       timestamp: Date.parse(currentDataValue.sourceTimestamp),
       currentTime: new Date()
     });
+
+    // TODO maybe also store the values in the csv-files?
   }
 }

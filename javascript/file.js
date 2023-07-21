@@ -38,5 +38,15 @@ module.exports = {
                 console.log(`Deleted ${filepath} successfully.`);
             });
         }
+    },
+
+    createFolderHierarchy: (config) => {
+        if(!fs.existsSync(config.logPath)) {
+            fs.mkdirSync(config.logPath);
+        }
+        if(!fs.existsSync(`${config.logPath}/screenshots`)) {
+            fs.mkdirSync(`${config.logPath}/screenshots`);
+        }
+        console.log("Initial Folder Hierarchy created!");
     }
 }
