@@ -14,12 +14,12 @@
         "anlageRuesten": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageRüsten\"", "csv": false },
         "anlageAutomatik": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"", "csv": true, "hoursRead": 24 },
         "anlageHand": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\"", "csv": false },
-        "nichtgeplanterStillstand": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"NichtgeplanterStillstand\"", "csv": false },
-        "geplanterStillstandRuesten": {
-            "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanterStillstandRuesten\"",
+        "pause": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Pause\"", "csv": false },
+        "ruesten": {
+            "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Ruesten\"",
             "csv": false
         },
-        "produktionszeit": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Produktionszeit\"", "csv": false },
-        "geplanteNichtproduktion": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"GeplanteNichtproduktion\"", "csv": false }
+        "produktiv": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Produktiv\"", "csv": false },
+        "stoerung": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Stoerung\"", "csv": false }
     }
 }

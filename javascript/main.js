@@ -122,22 +122,22 @@ socket.on("istStückzahl", function (data) {
     document.getElementById('istStueckzahl').textContent = "Stück\r\n" + data.value;
 });
 
-socket.on("nichtgeplanterStillstand", function (data) {
+socket.on("pause", function (data) {
     doughnut.data.datasets[0].data[0] = parseInt(data.value);
     doughnut.update();
 });
 
-socket.on("geplanterStillstandRuesten", function (data) {
+socket.on("ruesten", function (data) {
     doughnut.data.datasets[0].data[1] = parseInt(data.value);
     doughnut.update();
 });
 
-socket.on("produktionszeit", function (data) {
+socket.on("produktiv", function (data) {
     doughnut.data.datasets[0].data[2] = parseInt(data.value);
     doughnut.update();
 });
 
-// socket.on("geplanteNichtproduktion", function (date) {
+// socket.on("stoerung", function (date) {
 //     doughnut.data.datasets[0].data[3] = parseInt(date.value);
 //     doughnut.update();
 // });
