@@ -64,7 +64,7 @@ module.exports = {
 
         // linechart values as array
         if (config.nodeIds[v].csv) {
-          let csvData = fileHandler.readCSV(`${config.logPath}/${getCurrentDateAsFolderName()}/${v}.csv`);
+          let csvData = fileHandler.readCSV(fileHandler.getCurrentNodeIdFile(v, config));
           if (config.nodeIds[v].hoursRead == 24) {
             // we simply return the entire file data and not the "real" last 24 hours
             emittedValue = [...csvData];
@@ -98,12 +98,12 @@ module.exports = {
 
   storeLogData: function () {
     console.log("Storing log data");
-    let filepath = `${config.logPath}/${getCurrentDateAsFolderName()}.csv`;
+    let filepath = `${config.logPath}/${fileHandler.getCurrentDateAsFolderName()}.csv`;
     fileHandler.deleteCSV(filepath)
     let content = "";
     nodeIdKeys.forEach((v, i) => {
       content += `${v};`;
-      //fileHandler.appendToCSV(`${config.logPath}/${getCurrentDateAsFolderName()}.csv`, `${v};`);
+      //fileHandler.appendToCSV(`${config.logPath}/${fileHandler.getCurrentDateAsFolderName()}.csv`, `${v};`);
     });
     content += "\n";
     nodeIdKeys.forEach((v, i) => {
@@ -115,18 +115,6 @@ module.exports = {
   createFolderHierarchy: function() {
     fileHandler.createFolderHierarchy(config);
   }
-}
-
-function getCurrentDateAsFolderName() {
-  let d = new Date(),
-    month = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
-    year = d.getFullYear();
-
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
-
-  return [year, month, day].join('_');
 }
 
 async function create(io) {
@@ -159,20 +147,8 @@ async function createMonitoringItems(io) {
 
   monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
     dataValueMemory[index] = dataValue;
-    // use "csv" property to determine if we need to write to a csv file
-    // either way: use io.socket.emit
-    // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
-    if (config.nodeIds[nodeIdKeys[index]].csv) {
-      let entry =
-        "" +
-        dataValue.value.value +
-        ";" +
-        Date.parse(dataValue.sourceTimestamp) +
-        ";" +
-        new Date(Date.parse(dataValue.sourceTimestamp)) +
-        "\n";
-        fileHandler.appendToCSV(`${config.logPath}/${getCurrentDateAsFolderName()}/${nodeIdKeys[index]}.csv`, entry);
-    }
+  
+    fileHandler.storeValueInCSVBasedOnConfig(nodeIdKeys[index], dataValue.value.value, dataValue.sourceTimestamp, config);
 
     io.sockets.emit(nodeIdKeys[index], {
       value: dataValue.value.value,
@@ -219,18 +195,18 @@ async function createSession() {
 
 async function emitCurrentDataValues(io){
   console.log("emit current data values")
-  for (const nodeId of nodeIdKeys) {
+  for (const nodeIdName of nodeIdKeys) {
     const currentDataValue = await session.read({
-      nodeId: config.nodeIds[nodeId].id,
+      nodeId: config.nodeIds[nodeIdName].id,
       attributeId: AttributeIds.Value,
     });
 
-    io.sockets.emit(nodeId, {
+    io.sockets.emit(nodeIdName, {
       value: currentDataValue.value.value,
       timestamp: Date.parse(currentDataValue.sourceTimestamp),
       currentTime: new Date()
     });
 
-    // TODO maybe also store the values in the csv-files?
+    fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, dataValue.value.value, dataValue.sourceTimestamp, config);
   }
 }

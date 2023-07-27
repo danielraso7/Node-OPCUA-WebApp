@@ -1,6 +1,16 @@
 const fs = require('fs');
 
 module.exports = {
+    storeValueInCSVBasedOnConfig(nodeIdName, value, timestep, config) {
+        // use "csv" property to determine if we need to write to a csv file
+        // either way: use io.socket.emit
+        // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
+        if (config.nodeIds[nodeIdName].csv) {
+            let entry = "" + value + ";" + Date.parse(timestep) + ";" + new Date(Date.parse(timestep)) + "\n";
+            this.appendToCSV(this.getCurrentNodeIdFile(nodeIdName, config), entry);
+        }
+    },
+
     appendToCSV: (filepath, content) => {
         console.log("writing to " + filepath);
         let folderRelPath = filepath.slice(0, filepath.lastIndexOf("/"));
@@ -29,24 +39,40 @@ module.exports = {
     },
 
     deleteCSV: (filepath) => {
-        if(fs.existsSync(filepath)) {
+        if (fs.existsSync(filepath)) {
             fs.unlink(filepath, (err) => {
                 if (err) {
                     throw err;
                 }
-            
+
                 console.log(`Deleted ${filepath} successfully.`);
             });
         }
     },
 
     createFolderHierarchy: (config) => {
-        if(!fs.existsSync(config.logPath)) {
+        if (!fs.existsSync(config.logPath)) {
             fs.mkdirSync(config.logPath);
         }
-        if(!fs.existsSync(`${config.logPath}/screenshots`)) {
+        if (!fs.existsSync(`${config.logPath}/screenshots`)) {
             fs.mkdirSync(`${config.logPath}/screenshots`);
         }
         console.log("Initial Folder Hierarchy created!");
-    }
+    },
+
+    getCurrentNodeIdFile(nodeIdName, config){
+        return `${config.logPath}/${this.getCurrentDateAsFolderName()}/${nodeIdName}.csv`
+    },
+
+    getCurrentDateAsFolderName() {
+        let d = new Date(),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+      
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+      
+        return [year, month, day].join('_');
+      }
 }
