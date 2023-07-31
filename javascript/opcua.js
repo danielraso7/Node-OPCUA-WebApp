@@ -207,6 +207,6 @@ async function emitCurrentDataValues(io){
       currentTime: new Date()
     });
 
-    fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, dataValue.value.value, dataValue.sourceTimestamp, config);
+    fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, currentDataValue.value.value, currentDataValue.sourceTimestamp, config);
   }
 }
