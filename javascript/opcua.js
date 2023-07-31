@@ -64,23 +64,7 @@ module.exports = {
 
         // linechart values as array
         if (config.nodeIds[v].csv) {
-          let csvData = fileHandler.readCSV(fileHandler.getCurrentNodeIdFile(v, config));
-          if (config.nodeIds[v].hoursRead == 24) {
-            // we simply return the entire file data and not the "real" last 24 hours
-            emittedValue = [...csvData];
-          } else {
-            // [0] value, [1] timestamp in ms
-            let cutoffTime = Date.now() - 3600000 * config.nodeIds[v].hoursRead;
-
-            let cutoffIndex = 0;
-            for (let i = csvData.length - 1; i > 0; i--) {
-              if (csvData[i][1] < cutoffTime) {
-                cutoffIndex = i + 1;
-                break;
-              }
-            }
-            emittedValue = [...csvData.slice(cutoffIndex, csvData.length)];
-          }
+          emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(v, config), config.nodeIds[v].hoursRead);
         }
 
         io.sockets.emit(v, {

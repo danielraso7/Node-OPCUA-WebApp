@@ -7,7 +7,7 @@ module.exports = {
         // param "index" corresponds to the correct entry in config.json bc we added the nodeIds (itemToMonitor) to the subscription in the same order as they are in config.json
         if (config.nodeIds[nodeIdName].csv) {
             let entry = "" + value + ";" + Date.parse(timestep) + ";" + new Date(Date.parse(timestep)) + "\n";
-            this.appendToCSV(this.getCurrentNodeIdFile(nodeIdName, config), entry);
+            module.exports.appendToCSV(module.exports.getCurrentNodeIdFile(nodeIdName, config), entry);
         }
     },
 
@@ -38,6 +38,27 @@ module.exports = {
         return data.slice(0, data.length - 1) // - 1 because the last line is an empty line;
     },
 
+    getLatestValues: (filepath, hoursRead) => {
+        let csvData = module.exports.readCSV(filepath);
+        if (hoursRead == 24) {
+            // we simply return the entire file data and not the "real" last 24 hours
+            return [...csvData];
+        } else {
+            // [0] value, [1] timestamp in ms
+            let cutoffTime = Date.now() - 3600000 * hoursRead;
+
+            let cutoffIndex = 0;
+            for (let i = csvData.length - 1; i > 0; i--) {
+                if (csvData[i][1] < cutoffTime) {
+                cutoffIndex = i + 1;
+                break;
+                }
+            }
+            return [...csvData.slice(cutoffIndex, csvData.length)];
+          
+        }
+    },
+
     deleteCSV: (filepath) => {
         if (fs.existsSync(filepath)) {
             fs.unlink(filepath, (err) => {
@@ -61,7 +82,7 @@ module.exports = {
     },
 
     getCurrentNodeIdFile(nodeIdName, config){
-        return `${config.logPath}/${this.getCurrentDateAsFolderName()}/${nodeIdName}.csv`
+        return `${config.logPath}/${module.exports.getCurrentDateAsFolderName()}/${nodeIdName}.csv`
     },
 
     getCurrentDateAsFolderName() {
