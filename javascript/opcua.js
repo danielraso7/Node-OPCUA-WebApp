@@ -189,18 +189,20 @@ async function getAndEmitLiveDatavalues(io) {
   console.log("get & emit current data values");
 
   for (const nodeIdName of nodeIdKeys) {
-    const dataValue = await session.read({
-      nodeId: config.nodeIds[nodeIdName].id,
-      attributeId: AttributeIds.Value,
-    });
+    if (session) {
+      const dataValue = await session.read({
+        nodeId: config.nodeIds[nodeIdName].id,
+        attributeId: AttributeIds.Value,
+      });
 
-    io.sockets.emit(nodeIdName, {
-      value: dataValue.value.value,
-      timestamp: Date.parse(dataValue.sourceTimestamp),
-      currentTime: new Date()
-    });
+      io.sockets.emit(nodeIdName, {
+        value: dataValue.value.value,
+        timestamp: Date.parse(dataValue.sourceTimestamp),
+        currentTime: new Date()
+      });
 
-    fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, dataValue.value.value, dataValue.sourceTimestamp, config);
+      fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, dataValue.value.value, dataValue.sourceTimestamp, config);
+    }
   }
 }
 
