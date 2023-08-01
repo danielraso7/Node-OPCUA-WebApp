@@ -4,7 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const opcua = require("./javascript/opcua");
 const config = require("./config/config.json");
-const puppeteer = require('puppeteer');
+//const puppeteer = require('puppeteer');
 
 (async () => {
   try {
@@ -36,7 +36,7 @@ const puppeteer = require('puppeteer');
     const io = new Server(server);
     io.sockets.on("connection", function () {
       console.log("Client connected to server!");
-      opcua.emitValues(io);
+      opcua.emitHistoricalArrayValuesForLinecharts(io);
     });
 
     // set up folder hierarchy (if not existent)
@@ -48,7 +48,7 @@ const puppeteer = require('puppeteer');
     // run everyday at 11 pm
     runAtSpecificTimeOfDay(23,0,() => { 
       opcua.storeLogData();
-      screenShotWebsite();
+      //screenShotWebsite();
     });
 
     // detect CTRL+C and close
@@ -62,7 +62,7 @@ const puppeteer = require('puppeteer');
 
 
     // storing screenshot and pdf
-    await screenShotWebsite();
+    //await screenShotWebsite();
   } catch (err) {
     console.log(chalk.bgRed.white("Error" + err.message));
     console.log(err);
@@ -87,7 +87,7 @@ function runAtSpecificTimeOfDay(hour, minutes, func)
   }, eta_ms);
 }
 
-async function screenShotWebsite() {
+/*async function screenShotWebsite() {
   const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
@@ -119,4 +119,4 @@ async function screenShotWebsite() {
 
     await browser.close();
     console.log('Screenshot taken and PDF generated successfully.');
-}
+}*/

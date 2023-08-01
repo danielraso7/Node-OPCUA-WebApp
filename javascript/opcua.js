@@ -5,11 +5,10 @@ const fileHandler = require("./file");
 
 const endpointUrl = config.endpointUrl;
 //const endpointUrl = "opc.tcp://DESKTOP-H19DHJH:53530/OPCUA/SimulationServer";
-
 let client, session, subscription;
-
 let dataValueMemory = [];
 const nodeIdKeys = Object.keys(config.nodeIds);
+let intervalId;
 
 module.exports = {
 
@@ -19,12 +18,15 @@ module.exports = {
     });
     client.on("backoff", (retry) => {
       console.log("Retrying to connect to ", endpointUrl, " attempt ", retry);
+      clearInterval(intervalId);
     })
       .on("connection_failed", () => {
         console.log(`Client failed to connect.`);
+        clearInterval(intervalId);
       })
       .on("connection_lost", () => {
         console.log(`Client lost the connection.`);
+        clearInterval(intervalId);
       })
       .on("start_reconnection", () => {
         console.log(`Client is starting the reconnection process.`);
@@ -34,14 +36,16 @@ module.exports = {
       })
       .on("after_reconnection", () => {
         console.log(`Client finished the reconnection process.`);
+        this.emitHistoricalArrayValuesForLinecharts(io);
         create(io);
-        this.emitValues(io);
       })
       .on("close", () => {
         console.log(`Client closed and disconnected`);
+        clearInterval(intervalId);
       })
       .on("timed_out_request", (request) => {
         console.log(`Client request timed out: ${request.toString()}`);
+        clearInterval(intervalId);
       });
     console.log(" connecting to ", chalk.cyan(endpointUrl));
     await client.connect(endpointUrl);
@@ -56,26 +60,25 @@ module.exports = {
     if (client) await client.disconnect();
   },
 
-  emitValues: async function (io) {
-    if (client != null && nodeIdKeys != null && dataValueMemory.length != 0) {
+  emitHistoricalArrayValuesForLinecharts: async function (io) { 
+  // get historical data of linecharts in case of reconnect (either client connect or opcua reconnect)
+  // the other values are emitted every config.emitInterval milliseconds either way, no need for old data or dataValueMemory
+    if (client != null && nodeIdKeys != null) {
       nodeIdKeys.forEach((v, i) => {
-        // boolean or int values
-        let emittedValue = dataValueMemory[i].value.value;
-
         // linechart values as array
         if (config.nodeIds[v].csv) {
-          emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(v, config), config.nodeIds[v].hoursRead);
+          let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(v, config), config.nodeIds[v].hoursRead);
+
+          io.sockets.emit(v, {
+            value: emittedValue,
+            // timestamp: null, // not used in the case of emitting arrays, see main.js
+            currentTime: new Date()
+          });
+
+          // console.log(v);
+          // console.log(dataValueMemory[i].value.value);
+          // console.log(new Date(Date.parse(dataValueMemory[i].sourceTimestamp)));
         }
-
-        io.sockets.emit(v, {
-          value: emittedValue,
-          timestamp: Date.parse(dataValueMemory[i].sourceTimestamp),
-          currentTime: new Date()
-        });
-
-        // console.log(v);
-        // console.log(dataValueMemory[i].value.value);
-        // console.log(new Date(Date.parse(dataValueMemory[i].sourceTimestamp)));
       });
     }
   },
@@ -107,12 +110,14 @@ async function create(io) {
 
   await createSession();
 
-  await createSubscription(io);
+  await createSubscription();
 
-  await createMonitoringItems(io);
+  await createMonitoringItems();
+
+  intervalId = setInterval(() => { getAndEmitLiveDatavalues(io) }, config.emitInterval);
 }
 
-async function createMonitoringItems(io) {
+async function createMonitoringItems() {
   const subscriptionParameters = {
     samplingInterval: 100,
     discardOldest: true,
@@ -129,7 +134,7 @@ async function createMonitoringItems(io) {
 
   const monitoredItems = await subscription.monitorItems(itemsToMonitor, subscriptionParameters, TimestampsToReturn.Both);
 
-  monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
+  /*monitoredItems.on("changed", (monitoredItem, dataValue, index) => {
     dataValueMemory[index] = dataValue;
   
     fileHandler.storeValueInCSVBasedOnConfig(nodeIdKeys[index], dataValue.value.value, dataValue.sourceTimestamp, config);
@@ -143,10 +148,15 @@ async function createMonitoringItems(io) {
     //console.log(nodeIdKeys[index]);
     //console.log(dataValue.value.value);
     //console.log(new Date(Date.parse(dataValue.sourceTimestamp)));
-  });
+  });*/
 }
 
-async function createSubscription(io) {
+async function createSession() {
+  session = await client.createSession();
+  console.log(chalk.yellow(" session created"));
+}
+
+async function createSubscription() {
   subscription = await session.createSubscription2({
     requestedPublishingInterval: 1000,
     requestedLifetimeCount: 100,
@@ -159,38 +169,41 @@ async function createSubscription(io) {
   subscription
     .on("keepalive", function () {
       console.log(" SUBSCRIPTION KEEPALIVE ------------------------------->");
-      emitCurrentDataValues(io);
+      // emitCurrentDataValues(io);
     })
     .on("terminated", function () {
       console.log(" SUBSCRIPTION TERMINATED ------------------------------>");
+      clearInterval(intervalId);
     })
     .on("error", function () {
       console.log(" SUBSCRIPTION ERROR");
+      clearInterval(intervalId);
     })
     .on("internal_error", function () {
       console.log(" INTERNAL ERROR");
+      clearInterval(intervalId);
     });
 }
 
-async function createSession() {
-  session = await client.createSession();
-  console.log(chalk.yellow(" session created"));
-}
+async function getAndEmitLiveDatavalues(io) {
+  console.log("get & emit current data values");
 
-async function emitCurrentDataValues(io){
-  console.log("emit current data values")
   for (const nodeIdName of nodeIdKeys) {
-    const currentDataValue = await session.read({
+    const dataValue = await session.read({
       nodeId: config.nodeIds[nodeIdName].id,
       attributeId: AttributeIds.Value,
     });
 
     io.sockets.emit(nodeIdName, {
-      value: currentDataValue.value.value,
-      timestamp: Date.parse(currentDataValue.sourceTimestamp),
+      value: dataValue.value.value,
+      timestamp: Date.parse(dataValue.sourceTimestamp),
       currentTime: new Date()
     });
 
-    fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, currentDataValue.value.value, currentDataValue.sourceTimestamp, config);
+    fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, dataValue.value.value, dataValue.sourceTimestamp, config);
   }
 }
+
+
+
+

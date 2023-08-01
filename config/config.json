@@ -5,6 +5,7 @@
     "username": "ae",
     "password": "ae2020",
     "logPath": "./logs",
+    "emitInterval": 4000,
     "nodeIds": {
         "stromBesaeumer1": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer1\"", "csv": true, "hoursRead": 1 },
         "stromBesaeumer2": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer2\"", "csv": true, "hoursRead": 1 },
