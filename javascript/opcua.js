@@ -189,7 +189,7 @@ async function getAndEmitLiveDatavalues(io) {
   console.log("get & emit current data values");
 
   for (const nodeIdName of nodeIdKeys) {
-    if (session) {
+    if (!session._closed) {
       const dataValue = await session.read({
         nodeId: config.nodeIds[nodeIdName].id,
         attributeId: AttributeIds.Value,
