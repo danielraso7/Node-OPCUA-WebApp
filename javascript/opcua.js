@@ -114,6 +114,8 @@ async function create(io) {
 
   await createMonitoringItems();
 
+  await insertPreviousDatavalueForLinecharts(io);
+
   intervalId = setInterval(() => { getAndEmitLiveDatavalues(io) }, config.emitInterval);
 }
 
@@ -225,6 +227,40 @@ async function getAndEmitLiveDatavalues(io) {
         dataValueMemory[nodeIdName].value, 
         new Date(dataValueMemory[nodeIdName].timestamp), 
         config);
+    }
+  }
+}
+
+
+async function insertPreviousDatavalueForLinecharts(io) {
+  // avoid the diagonal in the linecharts by adding a point immediately before we add the actual newest datavalue
+  console.log("insert and emit previous datavalue for linecharts");
+
+  for (const nodeIdName of nodeIdKeys) {
+    if (config.nodeIds[nodeIdName].csv) {
+      const dataValue = await session.read({
+        nodeId: config.nodeIds[nodeIdName].id,
+        attributeId: AttributeIds.Value,
+      });
+
+      let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(nodeIdName, config), config.nodeIds[nodeIdName].hoursRead);
+
+      // get the latest datavalue
+      let lastEntry = emittedValue[emittedValue.length - 1];
+      // change the timestamp to the current server timestamp, keep the value the same
+      lastEntry[1] = Date.parse(dataValue.sourceTimestamp);
+      // add dummy entry (simply the previous value with the current server timestamp)
+      emittedValue.push(lastEntry);
+
+      dataValueMemory[nodeIdName] = { value: lastEntry[0], timestamp: lastEntry[1] };
+
+      io.sockets.emit(nodeIdName, {
+        value: lastEntry[0],
+        timestamp: lastEntry[1],
+        currentTime: new Date()
+      });
+
+      fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, lastEntry[0], dataValue.sourceTimestamp, config);
     }
   }
 }

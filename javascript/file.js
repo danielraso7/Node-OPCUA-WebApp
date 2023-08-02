@@ -50,8 +50,8 @@ module.exports = {
             let cutoffIndex = 0;
             for (let i = csvData.length - 1; i > 0; i--) {
                 if (csvData[i][1] < cutoffTime) {
-                cutoffIndex = i + 1;
-                break;
+                    cutoffIndex = i + 1;
+                    break;
                 }
             }
             return [...csvData.slice(cutoffIndex, csvData.length)];
