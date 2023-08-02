@@ -6,7 +6,7 @@ const fileHandler = require("./file");
 const endpointUrl = config.endpointUrl;
 //const endpointUrl = "opc.tcp://DESKTOP-H19DHJH:53530/OPCUA/SimulationServer";
 let client, session, subscription;
-let dataValueMemory = [];
+let dataValueMemory = {};
 const nodeIdKeys = Object.keys(config.nodeIds);
 let intervalId;
 
@@ -195,6 +195,8 @@ async function getAndEmitLiveDatavalues(io) {
         attributeId: AttributeIds.Value,
       });
 
+      dataValueMemory[nodeIdName] = { value: dataValue.value.value, timestamp: Date.parse(dataValue.sourceTimestamp) };
+
       io.sockets.emit(nodeIdName, {
         value: dataValue.value.value,
         timestamp: Date.parse(dataValue.sourceTimestamp),
@@ -202,6 +204,27 @@ async function getAndEmitLiveDatavalues(io) {
       });
 
       fileHandler.storeValueInCSVBasedOnConfig(nodeIdName, dataValue.value.value, dataValue.sourceTimestamp, config);
+    } else if (config.nodeIds[nodeIdName].csv && dataValueMemory[nodeIdName] !== undefined) { 
+      // in case of an inactive or closed session, we simply emit the last value every config.emitInterval seconds
+      // ONLY needed for linechart datavalues
+      // ONLY do this if we already have a value inside dataValueMemory
+      console.log("fill missing values because of faulty session");
+
+      // add x milliseconds to previous timestamp
+      // use this method instead of getting server timestamp because we dont have a valid session when being in this if branch
+      dataValueMemory[nodeIdName].timestamp += config.emitInterval;
+
+      io.sockets.emit(nodeIdName, {
+        value: dataValueMemory[nodeIdName].value,
+        timestamp: dataValueMemory[nodeIdName].timestamp,
+        currentTime: new Date()
+      });
+
+      fileHandler.storeValueInCSVBasedOnConfig(
+        nodeIdName, 
+        dataValueMemory[nodeIdName].value, 
+        new Date(dataValueMemory[nodeIdName].timestamp), 
+        config);
     }
   }
 }
