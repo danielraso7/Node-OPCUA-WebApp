@@ -19,22 +19,29 @@ const dataDoughnut = {
 };
 
 const configDoughnut = {
-    type: 'doughnut',
-    data: dataDoughnut,
-    options: {
-      responsive: true,
-      plugins: {
-        tooltip: {
-            enabled: true 
-        },
-        legend: {
-          position: 'bottom'
+  type: 'doughnut',
+  data: dataDoughnut,
+  options: {
+    responsive: true,
+    plugins: {
+      tooltip: {
+        enabled: true
+      },
+      legend: {
+        position: 'bottom'
+      },
+      datalabels: {
+        color: 'black',
+        formatter: (value, context) => {
+          return value + "%"
         }
-      }   
+      }
+    }
   },
+  plugins: [ChartDataLabels]
 };
 
 const doughnut = new Chart(
-  ctxDoughnut, 
+  ctxDoughnut,
   configDoughnut
 );
