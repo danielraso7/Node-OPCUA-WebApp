@@ -63,11 +63,13 @@ module.exports = {
   emitHistoricalArrayValuesForLinecharts: async function (io) { 
   // get historical data of linecharts in case of reconnect (either client connect or opcua reconnect)
   // the other values are emitted every config.emitInterval milliseconds either way, no need for old data or dataValueMemory
+    console.log("get and emit historical datavalues (array) for linecharts");
     if (client != null && nodeIdKeys != null) {
       nodeIdKeys.forEach((v, i) => {
         // linechart values as array
         if (config.nodeIds[v].csv) {
           let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(v, config), config.nodeIds[v].hoursRead);
+          if (emittedValue == -1) return; // do nothing if file not found (happens at first start of the day)
 
           io.sockets.emit(v, {
             value: emittedValue,
@@ -244,6 +246,7 @@ async function insertPreviousDatavalueForLinecharts(io) {
       });
 
       let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(nodeIdName, config), config.nodeIds[nodeIdName].hoursRead);
+      if (emittedValue == -1) return; // do nothing if file not found (happens at first start of the day)
 
       // get the latest datavalue
       let lastEntry = emittedValue[emittedValue.length - 1];

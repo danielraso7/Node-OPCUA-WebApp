@@ -39,7 +39,14 @@ module.exports = {
     },
 
     getLatestValues: (filepath, hoursRead) => {
-        let csvData = module.exports.readCSV(filepath);
+        let csvData;
+        try {
+            csvData = module.exports.readCSV(filepath);
+        } catch (e) {
+            console.error(e.message);
+            return -1;
+        }
+
         if (hoursRead == 24) {
             // we simply return the entire file data and not the "real" last 24 hours
             return [...csvData];
