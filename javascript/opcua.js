@@ -96,7 +96,7 @@ module.exports = {
     });
     content += "\n";
     nodeIdKeys.forEach((v, i) => {
-      content += `${dataValueMemory[i].value.value};`;
+      content += `${dataValueMemory[v].value};`;
     });
     fileHandler.appendToCSV(filepath, content);
   },
