@@ -110,7 +110,14 @@ module.exports = {
 
 async function create(io) {
   if (subscription) await subscription.terminate();
-  if (session) await session.close();
+  
+  if (session) {
+    while (session._reconnecting.reconnecting){
+      console.log("reconnecting before closing the session ...");
+      await new Promise(resolve => setTimeout(resolve, 3000)); // 3 sec
+    }
+    await session.close();
+  }
 
   if (!await createSession()){
     return false;
