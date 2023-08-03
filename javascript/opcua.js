@@ -1,6 +1,6 @@
 const config = require("../config/config.json");
 const chalk = require("chalk");
-const { AttributeIds, OPCUAClient, TimestampsToReturn } = require("node-opcua");
+const { AttributeIds, OPCUAClient, TimestampsToReturn, SecurityPolicy, MessageSecurityMode, UserTokenType } = require("node-opcua");
 const fileHandler = require("./file");
 
 const endpointUrl = config.endpointUrl;
@@ -14,6 +14,8 @@ module.exports = {
 
   createOPCUAClient: async function (io) {
     client = OPCUAClient.create({
+      securityMode: MessageSecurityMode.SignAndEncrypt,
+      securityPolicy: SecurityPolicy.Basic256Sha256,
       endpointMustExist: false,
     });
     client.on("backoff", (retry) => {
@@ -51,7 +53,7 @@ module.exports = {
     await client.connect(endpointUrl);
     console.log(" connected to ", chalk.cyan(endpointUrl));
 
-    create(io);
+    return create(io);
   },
 
   stopOPCUAClient: async function () {
@@ -110,7 +112,9 @@ async function create(io) {
   if (subscription) await subscription.terminate();
   if (session) await session.close();
 
-  await createSession();
+  if (!await createSession()){
+    return false;
+  }
 
   await createSubscription();
 
@@ -119,6 +123,8 @@ async function create(io) {
   await insertPreviousDatavalueForLinecharts(io);
 
   intervalId = setInterval(() => { getAndEmitLiveDatavalues(io) }, config.emitInterval);
+
+  return true;
 }
 
 async function createMonitoringItems() {
@@ -156,8 +162,19 @@ async function createMonitoringItems() {
 }
 
 async function createSession() {
-  session = await client.createSession();
-  console.log(chalk.yellow(" session created"));
+  const userIdentity = {
+    type: UserTokenType.UserName,
+    userName: config.opcua.username,
+    password: config.opcua.password,
+  }
+  try {
+    session = await client.createSession(userIdentity);
+  } catch (error) {
+    console.log(chalk.yellow("Could not create session!"));
+    return false;
+  }
+  console.log(chalk.yellow("session created"));
+  return true;
 }
 
 async function createSubscription() {

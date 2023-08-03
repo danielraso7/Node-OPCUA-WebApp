@@ -1,9 +1,15 @@
 {
     "port": "3700",
     "endpointUrl": "opc.tcp://192.168.10.14:4840",
-    "windowsUrl": "192.168.10.13",
-    "username": "ae",
-    "password": "ae2020",
+    "opcua": {
+        "username": "ae",
+        "password": "ae@2023!" 
+    },
+    "windows": {
+        "url": "192.168.10.13",
+        "username": "ae",
+        "password": "ae2020"
+    },
     "logPath": "./logs",
     "emitInterval": 4000,
     "nodeIds": {

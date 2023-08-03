@@ -43,7 +43,9 @@ const config = require("./config/config.json");
     opcua.createFolderHierarchy();
 
     // --------------------------------------------------------
-    opcua.createOPCUAClient(io);
+    if (! await opcua.createOPCUAClient(io)){
+      await shutDownOPCUAClient();
+    }
 
     // run everyday at 11 pm
     runAtSpecificTimeOfDay(23,0,() => { 
@@ -53,11 +55,7 @@ const config = require("./config/config.json");
 
     // detect CTRL+C and close
     process.once("SIGINT", async () => {
-      console.log("shutting down client");
-
-      await opcua.stopOPCUAClient();
-      console.log("Done");
-      process.exit(0);
+      await shutDownOPCUAClient();
     });
 
 
@@ -69,6 +67,14 @@ const config = require("./config/config.json");
     process.exit(-1);
   }
 })();
+
+async function shutDownOPCUAClient(){
+  console.log("shutting down client");
+
+  await opcua.stopOPCUAClient();
+  console.log("Done");
+  process.exit(0);
+}
 
 function runAtSpecificTimeOfDay(hour, minutes, func)
 {
