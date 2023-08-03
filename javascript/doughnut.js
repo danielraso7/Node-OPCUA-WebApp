@@ -8,7 +8,7 @@ const dataDoughnut = {
   ],
   datasets: [{
     label: '',
-    data: [300, 50, 100],
+    data: [],
     backgroundColor: [
       '#dc3545',
       '#0dcaf0',

@@ -69,7 +69,7 @@ const dataGauge = {
         backgroundColor: [
             'rgb(178, 178, 178)',
         ],
-        needleValue: 30,
+        needleValue: 0,
         borderColor: 'white',
         borderWidth: 1,
         cutout: '95%',

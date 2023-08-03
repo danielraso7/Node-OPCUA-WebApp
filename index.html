@@ -1,86 +1,104 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="./style/main.css" />
+    </head>
 
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="./bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="./style/main.css" />
-</head>
-
-<body>
-    <div class="container">
-        <div class="row" style="padding-top: 20px">
-            <div class="col d-flex justify-content-center">
-                <div class="gaugeBox">
-                    <canvas id="gauge" width="250px" height="250px"></canvas>
+    <body>
+        <div class="container">
+            <div class="row" style="padding-top: 20px">
+                <div class="col d-flex justify-content-center">
+                    <div class="gaugeBox">
+                        <canvas id="gauge" width="250px" height="250px"></canvas>
+                    </div>
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <div>
+                        <canvas id="doughnut" width="220px" height="220px"></canvas>
+                    </div>
+                </div>
+                <div class="col-auto d-flex mx-auto flex-wrap justify-content-center">
+                    <button
+                        id="istStueckzahl"
+                        type="button"
+                        class="btn btn-primary btn-square-md border border-2 border-dark m-1"
+                        style="pointer-events: none"
+                    >
+                        Stück<br />0
+                    </button>
+                    <button
+                        id="auto"
+                        type="button"
+                        class="btn btn-light btn-square-md border border-2 border-dark m-1"
+                        style="pointer-events: none"
+                    >
+                        Auto
+                    </button>
+                    <button
+                        id="hand"
+                        type="button"
+                        class="btn btn-light btn-square-md border border-2 border-dark m-1"
+                        style="pointer-events: none"
+                    >
+                        Hand
+                    </button>
+                    <button
+                        id="fault"
+                        type="button"
+                        class="btn btn-light btn-square-md border border-2 border-dark m-1"
+                        style="pointer-events: none"
+                    >
+                        Störung
+                    </button>
+                    <button
+                        id="equip"
+                        type="button"
+                        class="btn btn-light btn-square-md border border-2 border-dark m-1"
+                        style="pointer-events: none"
+                    >
+                        Rüsten
+                    </button>
                 </div>
             </div>
-            <div class="col d-flex justify-content-center">
-                <div>
-                    <canvas id="doughnut" width="220px" height="220px"></canvas>
+            <div class="row">
+                <div class="col">
+                    <div class="chartBox">
+                        <canvas id="stromBesaeumer1" width="1000" height="400"></canvas>
+                    </div>
                 </div>
             </div>
-            <div class="col-auto d-flex mx-auto flex-wrap justify-content-center">
-                <button id="istStueckzahl" type="button"
-                    class="btn btn-primary btn-square-md border border-2 border-dark m-1" style="pointer-events: none">
-                    Stück<br />2038
-                </button>
-                <button id="auto" type="button" class="btn btn-light btn-square-md border border-2 border-dark m-1"
-                    style="pointer-events: none">
-                    Auto
-                </button>
-                <button id="hand" type="button" class="btn btn-light btn-square-md border border-2 border-dark m-1"
-                    style="pointer-events: none">
-                    Hand
-                </button>
-                <button id="fault" type="button" class="btn btn-light btn-square-md border border-2 border-dark m-1"
-                    style="pointer-events: none">
-                    Störung
-                </button>
-                <button id="equip" type="button" class="btn btn-light btn-square-md border border-2 border-dark m-1"
-                    style="pointer-events: none">
-                    Rüsten
-                </button>
+            <div class="row">
+                <div class="col">
+                    <div class="chartBox">
+                        <canvas id="stromBesaeumer2" width="1000" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="chartBox anlageBox">
+                        <canvas id="anlageAutomatik" width="1000" height="400"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <div class="chartBox">
-                    <canvas id="stromBesaeumer1" width="1000" height="400"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="chartBox">
-                    <canvas id="stromBesaeumer2" width="1000" height="400"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="chartBox anlageBox">
-                    <canvas id="anlageAutomatik" width="1000" height="400"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-<script src="./javascript/libraries/socket.io.min.js"></script>
-<script src="./javascript/libraries/chart.umd.min.js"></script>
-<script src="./javascript/libraries/luxon.min.js"></script>
-<script src="./javascript/libraries/chartjs-adapter-luxon.umd.min.js"></script>
-<script src="./javascript/libraries/chartjs-plugin-datalabels.min.js"></script>
-<script src="./javascript/lineChartAnlageAutomatik.js"></script>
-<script src="./javascript/lineChartStromBesaeumer1.js"></script>
-<script src="./javascript/lineChartStromBesaeumer2.js"></script>
-<script src="./javascript/main.js"></script>
-<script src="./javascript/gauge.js"></script>
-<script src="./javascript/doughnut.js"></script>
-<script src="./javascript/libraries/jquery.min.js"></script>
-<script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    </body>
+    <script src="./javascript/libraries/socket.io.min.js"></script>
+    <script src="./javascript/libraries/chart.umd.min.js"></script>
+    <script src="./javascript/libraries/luxon.min.js"></script>
+    <script src="./javascript/libraries/chartjs-adapter-luxon.umd.min.js"></script>
+    <script src="./javascript/libraries/chartjs-plugin-datalabels.min.js"></script>
+    <script src="./javascript/lineChartAnlageAutomatik.js"></script>
+    <script src="./javascript/lineChartStromBesaeumer1.js"></script>
+    <script src="./javascript/lineChartStromBesaeumer2.js"></script>
+    <script src="./javascript/main.js"></script>
+    <script src="./javascript/gauge.js"></script>
+    <script src="./javascript/doughnut.js"></script>
+    <script src="./javascript/libraries/jquery.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
 </html>
