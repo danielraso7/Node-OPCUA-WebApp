@@ -1,0 +1,81 @@
+body {
+    font-size: 14px;
+    font-family: Arial;
+}
+
+.gaugeBox {
+    padding: 10px;
+}
+
+canvas#gauge {
+    margin-top: -125px;
+}
+
+.chartBox {
+    /*width: 1000px;*/
+    height: 250px;
+    padding: 10px;
+}
+
+.anlageBox {
+    height: 200px;
+}
+
+.amount {
+    background-color: darkblue;
+}
+
+.on {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: limegreen;
+}
+
+.off {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgrey;
+}
+
+.fault {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+}
+
+.equip {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: darkturquoise;
+}
+
+.btn-light {
+    background-color: lightgray;
+}
+
+.btn-success {
+    background-color: limegreen;
+}
+
+.btn-info {
+    color: white;
+}
+
+.btn {
+    width: 100px;
+    height: 100px;
+    padding: 6px 10px;
+    font-size: 1rem;
+}

@@ -1,0 +1,32 @@
+{
+    "port": "3700",
+    "endpointUrl": "opc.tcp://192.168.10.14:4840",
+    "opcua": {
+        "username": "ae",
+        "password": "ae@2023!" 
+    },
+    "windows": {
+        "url": "192.168.10.13",
+        "username": "ae",
+        "password": "ae2020"
+    },
+    "logPath": "./logs",
+    "emitInterval": 4000,
+    "nodeIds": {
+        "stromBesaeumer1": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer1\"", "csv": true, "hoursRead": 1 },
+        "stromBesaeumer2": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"StromBesaeumer2\"", "csv": true, "hoursRead": 1 },
+        "istStückzahl": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"Iststückzahl\"", "csv": false },
+        "geschMitnehmerfoerderer": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"GeschwMitnehmerfoerderer\"", "csv": false },
+        "anlageStoerung": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageStoerung\"", "csv": false },
+        "anlageRuesten": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageRüsten\"", "csv": false },
+        "anlageAutomatik": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageAutomatik\"", "csv": true, "hoursRead": 24 },
+        "anlageHand": { "id": "ns=3;s=\"Betriebsdaten\".\"Betriebsdaten\".\"AnlageHand\"", "csv": false },
+        "pause": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Pause\"", "csv": false },
+        "ruesten": {
+            "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Ruesten\"",
+            "csv": false
+        },
+        "produktiv": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Produktiv\"", "csv": false },
+        "stoerung": { "id": "ns=3;s=\"Betriebsdaten\".\"OEE\".\"Zeit\".\"Stoerung\"", "csv": false }
+    }
+}

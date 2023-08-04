@@ -2,26 +2,32 @@ const express = require("express");
 const chalk = require("chalk");
 const http = require("http");
 const { Server } = require("socket.io");
-const opcua = require("./javascript/opcua");
-const config = require("./config/config.json");
+const opcua = require("./src/javascript/opcua");
 const puppeteer = require('puppeteer');
-const fileHandler = require('./javascript/file');
+const fileHandler = require('./src/javascript/file');
+
+// read config file
+let config = fileHandler.readConfig("./config.json");
 
 (async () => {
   try {
     // --------------------------------------------------------
     const app = express();
     app.set("view engine", "html");
-    app.use(express.static(__dirname + "/"));
-    app.set("views", __dirname + "/");
+    app.use(express.static(__dirname + "/src/"));
+    app.set("views", __dirname + "/src/");
     app.get("/", function (req, res) {
       res.render("index.html");
     });
+    
+    app.locals.host = {
+      url: config.windows.url + ":" + config.port
+    }
 
     const server = http.createServer(app);
     server.listen(config.port, () => {
       console.log("Listening on port " + config.port);
-      console.log("visit http://localhost:" + config.port);
+      console.log("visit http://" + config.windows.url + ":" + config.port);
     });
 
     server.on("error", () => {
@@ -37,14 +43,14 @@ const fileHandler = require('./javascript/file');
     const io = new Server(server);
     io.sockets.on("connection", function () {
       console.log("Client connected to server!");
-      opcua.emitHistoricalArrayValuesForLinecharts(io);
+      opcua.emitHistoricalArrayValuesForLinecharts(io, config);
     });
 
     // set up folder hierarchy (if not existent)
-    opcua.createFolderHierarchy();
+    opcua.createFolderHierarchy(config);
 
     // --------------------------------------------------------
-    if (! await opcua.createOPCUAClient(io)) {
+    if (! await opcua.createOPCUAClient(io, config)) {
       await shutDownOPCUAClient();
     }
 
