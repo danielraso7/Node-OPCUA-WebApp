@@ -89,7 +89,7 @@ module.exports = {
 
   storeLogData: function () {
     console.log("Storing log data");
-    let filepath = `${config.logPath}/${fileHandler.getCurrentDateAsFolderName()}.csv`;
+    let filepath = `${config.logPath}/${fileHandler.getCurrentDateAsFolderName()}/${fileHandler.getCurrentDateAsFolderName()}.csv`;
     fileHandler.deleteCSV(filepath)
     let content = "";
     nodeIdKeys.forEach((nodeIdName, index) => {

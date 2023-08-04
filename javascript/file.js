@@ -1,6 +1,14 @@
 const fs = require('fs');
 
 module.exports = {
+    
+    createPathIfNotExists(path){
+        if (!fs.existsSync(path)) {
+            fs.mkdirSync(path);
+            console.log("Created path: " + path );
+        }
+    },
+
     storeValueInCSVBasedOnConfig(nodeIdName, value, timestep, config) {
         // use "csv" property to determine if we need to write to a csv file
         // either way: use io.socket.emit
@@ -82,9 +90,9 @@ module.exports = {
         if (!fs.existsSync(config.logPath)) {
             fs.mkdirSync(config.logPath);
         }
-        if (!fs.existsSync(`${config.logPath}/screenshots`)) {
-            fs.mkdirSync(`${config.logPath}/screenshots`);
-        }
+        // if (!fs.existsSync(`${config.logPath}/screenshots`)) {
+        //     fs.mkdirSync(`${config.logPath}/screenshots`);
+        // }
         console.log("Initial Folder Hierarchy created!");
     },
 
