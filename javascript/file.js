@@ -39,7 +39,7 @@ module.exports = {
     },
 
     getLatestValues: (filepath, hoursRead) => {
-        let csvData;
+        let csvData = [];
         try {
             csvData = module.exports.readCSV(filepath);
         } catch (e) {

@@ -270,7 +270,7 @@ async function insertPreviousDatavalueForLinecharts(io) {
       });
 
       let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(nodeIdName, config), config.nodeIds[nodeIdName].hoursRead);
-      if (emittedValue == -1) return; // do nothing if file not found (happens at first start of the day)
+      if (emittedValue == -1 || emittedValue.length == 0) return; // do nothing if file not found (happens at first start of the day) or when there are no values
 
       // get the latest datavalue
       let lastEntry = emittedValue[emittedValue.length - 1];
