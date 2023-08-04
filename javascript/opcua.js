@@ -92,13 +92,8 @@ module.exports = {
     let filepath = `${config.logPath}/${fileHandler.getCurrentDateAsFolderName()}.csv`;
     fileHandler.deleteCSV(filepath)
     let content = "";
-    nodeIdKeys.forEach((v, i) => {
-      content += `${v};`;
-      //fileHandler.appendToCSV(`${config.logPath}/${fileHandler.getCurrentDateAsFolderName()}.csv`, `${v};`);
-    });
-    content += "\n";
-    nodeIdKeys.forEach((v, i) => {
-      content += `${dataValueMemory[v].value};`;
+    nodeIdKeys.forEach((nodeIdName, index) => {
+      content += `${nodeIdName}; ${dataValueMemory[nodeIdName].value} \n`;
     });
     fileHandler.appendToCSV(filepath, content);
   },
