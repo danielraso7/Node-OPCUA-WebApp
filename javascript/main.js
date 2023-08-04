@@ -53,7 +53,13 @@ socket.on("anlageAutomatik", function (data) {
 
         setButtonToSuccessOrLight = anlageAutomatikArray[anlageAutomatikArray.length - 1].y; // .y because of object, see parseLineBooleanValue
     } else {
-        lineChartAnlageAutomatik.data.datasets[0].data.push({ x: new Date(data.timestamp), y: data.value ? 1 : 0 });
+        let convertedValue;
+        if (typeof data.value == 'string'){
+            convertedValue = data.value == 'true' ? 1 : 0;
+        } else {
+            convertedValue = data.value ? 1 : 0;
+        }
+        lineChartAnlageAutomatik.data.datasets[0].data.push({ x: new Date(data.timestamp), y: convertedValue });
 
         setButtonToSuccessOrLight = data.value;
     }
