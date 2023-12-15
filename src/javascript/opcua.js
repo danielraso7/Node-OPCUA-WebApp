@@ -3,7 +3,7 @@ const { AttributeIds, OPCUAClient, TimestampsToReturn, SecurityPolicy, MessageSe
 const fileHandler = require("./file");
 
 let endpointUrl;
-//const endpointUrl = "opc.tcp://DESKTOP-H19DHJH:53530/OPCUA/SimulationServer";
+
 let client, session, subscription;
 
 let dataValueMemory = [];
@@ -11,67 +11,84 @@ let nodeIdKeys;
 
 module.exports = {
 
-  createOPCUAClient: async function (io, config) {
+  /**
+   * Create an OPCUA - client by setting up parameters, actions and Subscriptions, Sessions and monitored items.
+   * @param {*} io IO server variable
+   * @param {*} config Config file reference variable
+   * @param {*} logger Logger variable
+   * @returns  `true` if OPCUA - client was created successfully, `false` otherwise
+   */
+  createOPCUAClient: async function (io, config, logger) {
     endpointUrl = config.endpointUrl;
     nodeIdKeys = Object.keys(config.nodeIds);
+
     client = OPCUAClient.create({
       securityMode: MessageSecurityMode.SignAndEncrypt,
       securityPolicy: SecurityPolicy.Basic256Sha256,
       endpointMustExist: false,
     });
-    client.on("backoff", (retry) => {
-      console.log("Retrying to connect to ", endpointUrl, " attempt ", retry);
-      clearInterval(intervalId);
-    })
+
+    // setting actions on specific events
+    client
+      .on("backoff", (retry) => {
+      logger.info("Retrying to connect to ", endpointUrl, " attempt ", retry);
+      })
       .on("connection_failed", () => {
-        console.log(`Client failed to connect.`);
-        clearInterval(intervalId);
+        logger.info(`Client failed to connect.`);
       })
       .on("connection_lost", () => {
-        console.log(`Client lost the connection.`);
-        clearInterval(intervalId);
+        logger.info(`Client lost the connection.`);
       })
       .on("start_reconnection", () => {
-        console.log(`Client is starting the reconnection process.`);
+        logger.info(`Client is starting the reconnection process.`);
       })
       .on("reconnection_attempt_has_failed", (_, message) => {
-        console.log(`Client reconnection attempt has failed: ${message}`);
+        logger.info(`Client reconnection attempt has failed: ${message}`);
       })
       .on("after_reconnection", () => {
-        console.log(`Client finished the reconnection process.`);
-        this.emitHistoricalArrayValuesForLinecharts(io, config);
-        create(io, config);
+        logger.info(`Client finished the reconnection process.`);
+        create(io, config, logger);
+        this.emitValues(io);
       })
       .on("close", () => {
-        console.log(`Client closed and disconnected`);
-        clearInterval(intervalId);
+        logger.info(`Client closed and disconnected`);
       })
       .on("timed_out_request", (request) => {
-        console.log(`Client request timed out: ${request.toString()}`);
-        clearInterval(intervalId);
+        logger.info(`Client request timed out: ${request.toString()}`);
       });
-    console.log(" connecting to ", chalk.cyan(endpointUrl));
-    await client.connect(endpointUrl);
-    console.log(" connected to ", chalk.cyan(endpointUrl));
 
-    return create(io, config);
+    logger.info("connecting to ", chalk.cyan(endpointUrl));
+    await client.connect(endpointUrl);
+    logger.info("connected to ", chalk.cyan(endpointUrl));
+
+    // create Subscriptions, Sessions and monitored items
+    return create(io, config, logger);
   },
 
+  /**
+   * Stopping the OPCUA - client by closing its subscriptions, sessions and disconnecting the client.
+   */
   stopOPCUAClient: async function () {
     if (subscription) await subscription.terminate();
     if (session) await session.close();
     if (client) await client.disconnect();
   },
 
-  emitHistoricalArrayValuesForLinecharts: async function (io, config) { 
+  /**
+   * Emitting (sending) historical values of monitored items to web clients
+   * @param {*} io IO server variable 
+   * @param {*} config Config file reference variable
+   * @param {*} logger Logger variable
+   */
+  emitHistoricalArrayValuesForLinecharts: async function (io, config, logger) { 
   // get historical data of linecharts in case of reconnect (either client connect or opcua reconnect)
   // the other values are emitted every config.emitInterval milliseconds either way, no need for old data or dataValueMemory
-    console.log("get and emit historical datavalues (array) for linecharts");
+    logger.info("get and emit historical datavalues (array) for linecharts");
     if (client != null && nodeIdKeys != null) {
       nodeIdKeys.forEach((v, i) => {
         // linechart values as array
         if (config.nodeIds[v].csv) {
-          let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(v, config), config.nodeIds[v].hoursRead);
+          let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(v, config), config.nodeIds[v].hoursRead, logger);
           if (emittedValue == -1) return; // do nothing if file not found (happens at first start of the day)
 
           io.sockets.emit(v, {
@@ -79,17 +96,18 @@ module.exports = {
             // timestamp: null, // not used in the case of emitting arrays, see main.js
             currentTime: new Date()
           });
-
-          // console.log(v);
-          // console.log(dataValueMemory[i].value.value);
-          // console.log(new Date(Date.parse(dataValueMemory[i].sourceTimestamp)));
         }
       });
     }
   },
 
-  storeLogData: function (config) {
-    console.log("Storing log data");
+  /**
+   * Storing log data (monitored items) in a csv file located in `config.logPath`. 
+   * @param {*} config Config file reference variable
+   * @param {*} logger Logger variable
+   */
+  storeLogData: function (config, logger) {
+    logger.info("Storing log data");
     let filepath = `${config.logPath}/${fileHandler.getCurrentDateAsFolderName()}.csv`;
     fileHandler.deleteCSV(filepath)
     let content = "";
@@ -101,15 +119,26 @@ module.exports = {
     nodeIdKeys.forEach((v, i) => {
       content += `${dataValueMemory[v].value};`;
     });
-    fileHandler.appendToCSV(filepath, content);
+    fileHandler.appendToCSV(filepath, content, logger);
   },
 
+  /**
+   * Create default folder hierarchy.
+   * @param {*} config Config file reference variable
+   */
   createFolderHierarchy: function(config) {
     fileHandler.createFolderHierarchy(config);
   }
 }
 
-async function create(io, config) {
+/**
+ * Creating subscriptions, sessions and monitored items.
+ * @param {*} io IO server variable
+ * @param {*} config Config file reference variable
+ * @param {*} logger Logger variable
+ * @returns 
+ */
+async function create(io, config, logger) {
   if (subscription) await subscription.terminate();
   
   if (session) {
@@ -120,22 +149,26 @@ async function create(io, config) {
     await session.close();
   }
 
-  if (!await createSession(config)){
+  if (!await createSession(config, logger)){
     return false;
   }
 
-  await createSubscription();
+  await createSubscription(io, logger);
 
-  await createMonitoringItems(io, config);
+  await createMonitoringItems(config);
 
-  await insertPreviousDatavalueForLinecharts(io, config);
+  await insertPreviousDatavalueForLinecharts(config, logger);
 
-  intervalId = setInterval(() => { getAndEmitLiveDatavalues(io, config) }, config.emitInterval);
+  intervalId = setInterval(() => { getAndEmitLiveDatavalues(io, config, logger) }, config.emitInterval);
 
   return true;
 }
 
-async function createMonitoringItems(io, config) {
+/**
+ * Create monitoring items for each node id.  
+ * @param {*} config Config file reference variable
+ */
+async function createMonitoringItems(config) {
   const subscriptionParameters = {
     samplingInterval: 100,
     discardOldest: true,
@@ -185,7 +218,11 @@ async function createSession(config) {
   return true;
 }
 
-async function createSubscription() {
+/**
+ * Create subscription with specific parameters.
+ * @param {*} logger Logger variable
+ */
+async function createSubscription(logger) {
   subscription = await session.createSubscription2({
     requestedPublishingInterval: 1000,
     requestedLifetimeCount: 100,
@@ -197,25 +234,31 @@ async function createSubscription() {
 
   subscription
     .on("keepalive", function () {
-      console.log(" SUBSCRIPTION KEEPALIVE ------------------------------->");
+      logger.info(" SUBSCRIPTION KEEPALIVE ------------------------------->");
       // emitCurrentDataValues(io);
     })
     .on("terminated", function () {
-      console.log(" SUBSCRIPTION TERMINATED ------------------------------>");
+      logger.info(" SUBSCRIPTION TERMINATED ------------------------------>");
       clearInterval(intervalId);
     })
     .on("error", function () {
-      console.log(" SUBSCRIPTION ERROR");
+      logger.error(" SUBSCRIPTION ERROR");
       clearInterval(intervalId);
     })
     .on("internal_error", function () {
-      console.log(" INTERNAL ERROR");
+      logger.error(" INTERNAL ERROR");
       clearInterval(intervalId);
     });
 }
 
-async function getAndEmitLiveDatavalues(io, config) {
-  console.log("get & emit current data values");
+/**
+ * Retrieve live values and emit them to the web client.
+ * @param {*} io IO server variable
+ * @param {*} config Config file reference variable
+ * @param {*} logger Logger variable
+ */
+async function getAndEmitLiveDatavalues(io, config, logger) {
+  logger.info("get & emit current data values");
 
   for (const nodeIdName of nodeIdKeys) {
     if (!session._closed) {
@@ -237,7 +280,7 @@ async function getAndEmitLiveDatavalues(io, config) {
       // in case of an inactive or closed session, we simply emit the last value every config.emitInterval seconds
       // ONLY needed for linechart datavalues
       // ONLY do this if we already have a value inside dataValueMemory
-      console.log("fill missing values because of faulty session");
+      logger.info("fill missing values because of faulty session");
 
       // add x milliseconds to previous timestamp
       // use this method instead of getting server timestamp because we dont have a valid session when being in this if branch
@@ -258,10 +301,15 @@ async function getAndEmitLiveDatavalues(io, config) {
   }
 }
 
-
-async function insertPreviousDatavalueForLinecharts(io, config) {
+/**
+ * Insert previous datavalue for linecharts for the web client.
+ * @param {*} io IO server variable
+ * @param {*} config Config file reference variable
+ * @param {*} logger Logger variable
+ */
+async function insertPreviousDatavalueForLinecharts(io, config, logger) {
   // avoid the diagonal in the linecharts by adding a point immediately before we add the actual newest datavalue
-  console.log("insert and emit previous datavalue for linecharts");
+  logger.info("insert and emit previous datavalue for linecharts");
 
   for (const nodeIdName of nodeIdKeys) {
     if (config.nodeIds[nodeIdName].csv) {
@@ -270,7 +318,7 @@ async function insertPreviousDatavalueForLinecharts(io, config) {
         attributeId: AttributeIds.Value,
       });
 
-      let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(nodeIdName, config), config.nodeIds[nodeIdName].hoursRead);
+      let emittedValue = fileHandler.getLatestValues(fileHandler.getCurrentNodeIdFile(nodeIdName, config), config.nodeIds[nodeIdName].hoursRead, logger);
       if (emittedValue == -1) return; // do nothing if file not found (happens at first start of the day)
 
       // get the latest datavalue
